@@ -63,12 +63,58 @@ def is_valid_direction(board, row, col, direction, currentplayer):
         y += j
 
     return False
-def getflipping(pos,board,currentplayer):
-    for i in range(8):
-        for j in range(8):
-            if board[i][j]== currentplayer:
-                b=b
-    return True
+
+def is_geting_flipped(pos,board,currentplayer):
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
+    output=[]
+    for direction in directions:
+        i, j = direction
+        y=pos%10
+        x=math.floor(pos/10)
+        if i==0 and j==1:
+            t=8-y
+        elif i==1 and j==0:
+            t=8-x
+        elif i==0 and j==-1:
+            t=y
+        elif i==-1 and j==0:
+            t=x
+        elif i==1 and j==1:
+            t=x
+            if y>t:
+                t=y
+        elif i==-1 and j==-1:
+            t=x
+            if y<t:
+                t=y
+        elif i==-1 and j ==1:
+            t=x
+            if y<8-x:
+                t=y
+        elif i==1 and j==-1:
+            t=y
+            if x<8-y:
+                t=y
+        
+        temp=[]
+        for b in range(t):
+            
+            if x<1 or x>8:
+                x += i
+            if y<1 or y>8:
+                y += j
+           
+            if board[x][y]==3-currentplayer:
+                temp.append(10*x+y)
+            elif board[x][y]==currentplayer:
+                output = output+temp
+               
+            elif board[x][y]==0:
+                temp=[]
+    for pos in output:
+        board=changeBoard(pos,board,currentplayer)
+    return board
+
 
  
 changeBoard(33,board,1)
@@ -87,5 +133,6 @@ while True:
 
     
     board=changeBoard(pos,board,currentplayer)
+    board=is_geting_flipped(pos,board,currentplayer)
     currentplayer = (currentplayer%2)+1
     printBoard(board)
