@@ -77,7 +77,7 @@ def is_geting_flipped(pos,board,player):
         elif i == 1 and j == 0:
             t = 8 - x
         elif i == 0 and j == -1:
-            t = y
+            t = y+1
         elif i == -1 and j == 0:
             t = x
         elif i == 1 and j == 1:
@@ -87,21 +87,18 @@ def is_geting_flipped(pos,board,player):
         elif i == -1 and j == 1:
             t = min(x, 8 - y)
         elif i == 1 and j == -1:
-            t = min(8 - x, y)
+            t = min(8 - x, y)+1
         temp=[]
-        
         for b in range(t):
-
             if board[y][x] == player:
                 output.extend(temp)
-                b=t
-            elif board[y][x] == opp and b<t:
+            elif board[y][x] == opp:
                 temp.append(10*x+y)
             elif board[y][x]==0:
                 temp=[]
-                b=t
                 
-
+            r=board[y][x]
+            print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos)
             y += j
             x += i
     for k in output:
@@ -137,10 +134,10 @@ while True:
     if possible_moves !=[]:
         pos = 99
         while pos==99:
-            pos=int(input("Vilken pos 11 till 88 ")) or 99
-            if any(pos == p for p in possible_moves) is False:
+            pos=str(input("Vilken pos 11 till 88 ")) or 99 
+            if any(int(pos) == p for p in possible_moves) is False:
                 pos = 99
-        board=is_geting_flipped(pos-11,board,player)
+        board=is_geting_flipped(int(pos)-11,board,player)
         printBoard(board)
     player = 3 - player
     
