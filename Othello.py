@@ -146,4 +146,4 @@ while True:
         board=is_geting_flipped(int(POS)-11,board,PLAYER)
     print_board(board)
     PLAYER = 3 - PLAYER
-    
+     
