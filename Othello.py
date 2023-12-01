@@ -11,7 +11,7 @@ for i in range(8):
 def printBoard(board):
     for p in board:
         print(p)
-    return 
+    return
 
 def changeBoard(pos,board,player):
     temp = board[pos%10]
@@ -90,25 +90,25 @@ def is_geting_flipped(pos,board,player):
             t = min(8 - x, y)
         temp=[]
         for b in range(t):
-            
+
             if board[y][x] == player:
                 output.extend(temp)
             elif board[y][x] == opp:
                 temp.append(10*x+y)
             elif board[y][x]==0:
                 temp=[]
-            
+
             y += j
             x += i
-            
+
     for k in output:
-       
+
         board=changeBoard(k,board,player)
-    
+
     return board
 
 
- 
+
 changeBoard(33,board,1)
 changeBoard(44,board,1)
 changeBoard(43,board,2)
@@ -121,8 +121,8 @@ while True:
     pos = 99
     while pos==99:
         pos=int(input("Vilken pos 11 till 88 ")) or 99
-        if any(pos == p for p in possible_moves)==False:
-            pos = 99   
+        if any(pos == p for p in possible_moves) is False:
+            pos = 99
     board=changeBoard(pos,board,player)
     board=is_geting_flipped(pos,board,player)
     printBoard(board)
