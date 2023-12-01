@@ -8,10 +8,15 @@ for q in range(8):
         x.append(int(0))
     board.append(x)
 
+##def print_board(oard):
+##    for p in oard:
+##        print(p)
+##    return
 def print_board(oard):
-    for p in oard:
-        print(p)
-    return
+    for row in oard:
+        for cell in row:
+            print('⚪' if cell == 1 else '⚫' if cell == 2 else '🟢', end=' ')
+        print()
 
 def change_board(pos,board,kplayer):
     temp = board[pos%10]
