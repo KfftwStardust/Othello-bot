@@ -100,7 +100,7 @@ def is_geting_flipped(pos,board,player):
             elif board[y][x]==0:
                 temp=[]
                 b=t
-            b +=1    
+                
 
             y += j
             x += i
@@ -126,15 +126,21 @@ changeBoard(44,board,1)
 changeBoard(43,board,2)
 changeBoard(34,board,2)
 printBoard(board)
+possible_moves=0
 while True:
+    past_possible_moves=possible_moves
     possible_moves = get_possible_moves(board, player)
+    if past_possible_moves == [] and possible_moves ==[]:
+        print("Player",who_wins(board),"wins")
     print("Possible moves:", possible_moves)
-    pos = 99
-    while pos==99:
-        pos=int(input("Vilken pos 11 till 88 ")) or 99
-        if any(pos == p for p in possible_moves) is False:
-            pos = 99
-    board=is_geting_flipped(pos-11,board,player)
-    printBoard(board)
+    print("Player",player,"turn")
+    if possible_moves !=[]:
+        pos = 99
+        while pos==99:
+            pos=int(input("Vilken pos 11 till 88 ")) or 99
+            if any(pos == p for p in possible_moves) is False:
+                pos = 99
+        board=is_geting_flipped(pos-11,board,player)
+        printBoard(board)
     player = 3 - player
     
