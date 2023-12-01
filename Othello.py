@@ -2,7 +2,7 @@ import math
 board=[]
 player = 1
 
-for i in range(8):
+for q in range(8):
     x=[]
     for o in range(8):
         x.append(int(0))
@@ -26,7 +26,7 @@ def get_possible_moves(board, player):
         for j in range(8):
             if board[i][j] == 0:
                 if is_valid_move(board, i, j, player):
-                    possible_moves.append(j*10+i)
+                    possible_moves.append(j*10+i+11)
 
     return possible_moves
 
@@ -66,7 +66,7 @@ def is_valid_direction(board, row, col, direction, player):
 
 def is_geting_flipped(pos,board,player):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
-    output=[]
+    output=[pos]
     opp=2 if player ==1 else 1
     for direction in directions:
         i, j = direction
@@ -89,31 +89,42 @@ def is_geting_flipped(pos,board,player):
         elif i == 1 and j == -1:
             t = min(8 - x, y)
         temp=[]
+        
         for b in range(t):
 
             if board[y][x] == player:
                 output.extend(temp)
-            elif board[y][x] == opp:
+                b=t
+            elif board[y][x] == opp and b<t:
                 temp.append(10*x+y)
             elif board[y][x]==0:
                 temp=[]
+                b=t
+            b +=1    
 
             y += j
             x += i
-
     for k in output:
-
         board=changeBoard(k,board,player)
-
     return board
 
+def who_wins(board):
+    p1_score=0
+    p2_score=0
+    for u in range(8):
+        for r in range(8):
+            if board[u][r]==1:
+                p1_score +=1
+            if board[u][r]==2:
+                p2_score +=1
+    winner=max(p1_score,p2_score)
+    return winner
 
 
 changeBoard(33,board,1)
 changeBoard(44,board,1)
 changeBoard(43,board,2)
 changeBoard(34,board,2)
-
 printBoard(board)
 while True:
     possible_moves = get_possible_moves(board, player)
@@ -123,8 +134,7 @@ while True:
         pos=int(input("Vilken pos 11 till 88 ")) or 99
         if any(pos == p for p in possible_moves) is False:
             pos = 99
-    board=changeBoard(pos,board,player)
-    board=is_geting_flipped(pos,board,player)
+    board=is_geting_flipped(pos-11,board,player)
     printBoard(board)
     player = 3 - player
     
