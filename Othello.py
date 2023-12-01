@@ -1,6 +1,6 @@
 import math
 board=[]
-player = 1
+PLAYER = 1
 
 for q in range(8):
     x=[]
@@ -8,55 +8,55 @@ for q in range(8):
         x.append(int(0))
     board.append(x)
 
-def printBoard(board):
-    for p in board:
+def print_board(oard):
+    for p in oard:
         print(p)
     return
 
-def changeBoard(pos,board,player):
+def change_board(pos,board,kplayer):
     temp = board[pos%10]
-    temp[math.floor(pos/10)]= player
+    temp[math.floor(pos/10)]= kplayer
     board[pos%10] = temp
     return board
 
-def get_possible_moves(board, player):
-    possible_moves = []
+def get_possible_moves(sboard, lplayer):
+    POSSIBLE_MOVES = []
 
     for i in range(8):
         for j in range(8):
             if board[i][j] == 0:
-                if is_valid_move(board, i, j, player):
-                    possible_moves.append(j*10+i+11)
+                if is_valid_move(sboard, i, j, lplayer):
+                    POSSIBLE_MOVES.append(j*10+i+11)
+    POSSIBLE_MOVES.sort()
+    return POSSIBLE_MOVES
 
-    return possible_moves
-
-def is_valid_move(board, row, col, player):
-    if board[row][col] != 0:
+def is_valid_move(dboard, row, col, layer):
+    if dboard[row][col] != 0:
         return False
 
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
 
     for direction in directions:
-        if is_valid_direction(board, row, col, direction, player):
+        if is_valid_direction(dboard, row, col, direction, layer):
             return True
 
     return False
 
-def is_valid_direction(board, row, col, direction, player):
-    opponent = 3 - player
+def is_valid_direction(cboard, row, col, direction, cplayer):
+    opponent = 3 - cplayer
     i, j = direction
 
     x, y = row + i, col + j
-    if not (0 <= x < 8 and 0 <= y < 8) or board[x][y] != opponent:
+    if not (0 <= x < 8 and 0 <= y < 8) or cboard[x][y] != opponent:
         return False
 
     x += i
     y += j
 
     while 0 <= x < 8 and 0 <= y < 8:
-        if board[x][y] == player:
+        if cboard[x][y] == cplayer:
             return True
-        elif board[x][y] == 0:
+        elif cboard[x][y] == 0:
             return False
 
         x += i
@@ -64,10 +64,10 @@ def is_valid_direction(board, row, col, direction, player):
 
     return False
 
-def is_geting_flipped(pos,board,player):
+def is_geting_flipped(pos,board,pplayer):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
     output=[pos]
-    opp=2 if player ==1 else 1
+    opp=2 if pplayer ==1 else 1
     for direction in directions:
         i, j = direction
         y=pos%10
@@ -77,7 +77,9 @@ def is_geting_flipped(pos,board,player):
         elif i == 1 and j == 0:
             t = 8 - x
         elif i == 0 and j == -1:
-            t = y+1
+            t = y
+            y += j
+            x += i
         elif i == -1 and j == 0:
             t = x
         elif i == 1 and j == 1:
@@ -87,22 +89,26 @@ def is_geting_flipped(pos,board,player):
         elif i == -1 and j == 1:
             t = min(x, 8 - y)
         elif i == 1 and j == -1:
-            t = min(8 - x, y)+1
-        temp=[]
-        for b in range(t):
-            if board[y][x] == player:
-                output.extend(temp)
-            elif board[y][x] == opp:
-                temp.append(10*x+y)
-            elif board[y][x]==0:
-                temp=[]
-                
-            r=board[y][x]
-            print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos)
+            t = min(8 - x, y)
             y += j
             x += i
-    for k in output:
-        board=changeBoard(k,board,player)
+        temp=[]
+        for b in range(t):
+            
+            if board[y][x] == opp:
+                temp.append(10*x+y)
+            if board[y][x]==0:
+                temp=[]
+            if board[y][x] == pplayer:
+                output.extend(temp)
+                temp=[]
+                
+            #r=board[y][x]
+            #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos)
+            y += j
+            x += i
+    for pos in output:
+        board=change_board(pos,board,pplayer)
     return board
 
 def who_wins(board):
@@ -118,26 +124,26 @@ def who_wins(board):
     return winner
 
 
-changeBoard(33,board,1)
-changeBoard(44,board,1)
-changeBoard(43,board,2)
-changeBoard(34,board,2)
-printBoard(board)
-possible_moves=0
+change_board(33,board,1)
+change_board(44,board,1)
+change_board(43,board,2)
+change_board(34,board,2)
+print_board(board)
+POSSIBLE_MOVES=0
 while True:
-    past_possible_moves=possible_moves
-    possible_moves = get_possible_moves(board, player)
-    if past_possible_moves == [] and possible_moves ==[]:
+    PAST_POSSIBLE_MOVES=POSSIBLE_MOVES
+    POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
+    if not PAST_POSSIBLE_MOVES and not POSSIBLE_MOVES:
         print("Player",who_wins(board),"wins")
-    print("Possible moves:", possible_moves)
-    print("Player",player,"turn")
-    if possible_moves !=[]:
-        pos = 99
-        while pos==99:
-            pos=str(input("Vilken pos 11 till 88 ")) or 99 
-            if any(int(pos) == p for p in possible_moves) is False:
-                pos = 99
-        board=is_geting_flipped(int(pos)-11,board,player)
-        printBoard(board)
-    player = 3 - player
+    print("Possible moves:", POSSIBLE_MOVES)
+    print("Player",PLAYER,"turn")
+    if POSSIBLE_MOVES!=[]:
+        POS = 99
+        while POS==99:
+            POS=str(input("Vilken pos 11 till 88 ")) or 99
+            if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
+                POS = 99
+        board=is_geting_flipped(int(POS)-11,board,PLAYER)
+    print_board(board)
+    PLAYER = 3 - PLAYER
     
