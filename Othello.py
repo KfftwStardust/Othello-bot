@@ -17,6 +17,7 @@ def print_board(oard):
         for cell in row:
             print('⚪' if cell == 1 else '⚫' if cell == 2 else '🟢', end=' ')
         print()
+    return True
 
 def change_board(pos,board,kplayer):
     temp = board[pos%10]
@@ -71,7 +72,7 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
 
 def is_geting_flipped(pos,board,pplayer):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
-    output=[pos]
+    output=[]
     opp=2 if pplayer ==1 else 1
     for direction in directions:
         i, j = direction
@@ -94,20 +95,30 @@ def is_geting_flipped(pos,board,pplayer):
         elif i == 1 and j == -1:
             t = min(8 - x, y)
         temp=[]
+        allow=0
         for b in range(t):
             
             if board[y][x] == opp:
                 temp.append(10*x+y)
-            if board[y][x]==0:
+            if board[y][x]==0 and allow==0:
+                allow = 1
                 temp=[]
+                break    
             if board[y][x] == pplayer:
                 output.extend(temp)
+                #print(temp)
                 temp=[]
+              
+            
                 
-            #r=board[y][x]
+            r=board[y][x]
             #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos)
             y += j
             x += i
+        if board[y][x] == pplayer:
+                output.extend(temp)
+                #print(temp)
+                temp=[]  
     for pos in output:
         board=change_board(pos,board,pplayer)
     return board
@@ -141,10 +152,11 @@ while True:
     if POSSIBLE_MOVES!=[]:
         POS = 99
         while POS==99:
-            POS=str(input("Vilken pos 11 till 88 ")) or 99
-            if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
+            POS=int(input("Vilken pos 11 till 88 ")) or 99
+            if any(POS == p for p in POSSIBLE_MOVES) == False:
                 POS = 99
-        board=is_geting_flipped(int(POS)-11,board,PLAYER)
+        change_board(POS-11,board,PLAYER)
+        board=is_geting_flipped(POS-11,board,PLAYER)
     print_board(board)
     PLAYER = 3 - PLAYER
      
