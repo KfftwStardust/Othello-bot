@@ -83,8 +83,6 @@ def is_geting_flipped(pos,board,pplayer):
             t = 8 - x
         elif i == 0 and j == -1:
             t = y
-            y += j
-            x += i
         elif i == -1 and j == 0:
             t = x
         elif i == 1 and j == 1:
@@ -95,8 +93,6 @@ def is_geting_flipped(pos,board,pplayer):
             t = min(x, 8 - y)
         elif i == 1 and j == -1:
             t = min(8 - x, y)
-            y += j
-            x += i
         temp=[]
         for b in range(t):
             
