@@ -154,8 +154,10 @@ def who_wins(board):
                 p1_score +=1
             if board[u][r]==2:
                 p2_score +=1
-    winner=max(p1_score,p2_score)
-    return winner
+    if p1_score == p2_score:
+        return "draw"
+    else:
+        return "p1_win" if p1_score > p2_score else "p2_win"
 
 change_board(33,board,1)
 change_board(44,board,1)
@@ -168,7 +170,13 @@ while True:
     PAST_POSSIBLE_MOVES=POSSIBLE_MOVES
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
     if not PAST_POSSIBLE_MOVES and not POSSIBLE_MOVES:
-        print("Player",who_wins(board),"wins")
+        result = who_wins(board)
+        if result == "draw":
+            print("The game ended in a Draw")
+        elif result == "p1_win":
+            print("Player 1 wins")
+        elif result == "p2_win":
+            print("Player 2 wins")
     print("Possible moves:", POSSIBLE_MOVES)
     print("Player",PLAYER,"turn")
     if POSSIBLE_MOVES!=[]:
