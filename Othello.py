@@ -1,17 +1,33 @@
 import math
 board=[]
 PLAYER = 1
-
 for q in range(8):
     x=[]
     for o in range(8):
         x.append(int(0))
     board.append(x)
 
+
+
+
 ##def print_board(oard):
 ##    for p in oard:
 ##        print(p)
 ##    return
+def new_game():
+    board=[]
+    player = 1
+    for q in range(8):
+        x=[]
+        for o in range(8):
+            x.append(int(0))
+        board.append(x)
+    change_board(33,board,1)
+    change_board(44,board,1)
+    change_board(43,board,2)
+    change_board(34,board,2)
+    return [board,player]
+
 def print_board(oard):
     for row in oard:
         for cell in row:
@@ -79,25 +95,30 @@ def is_geting_flipped(pos,board,pplayer):
         y=pos%10
         x=math.floor(pos/10)
         if i == 0 and j == 1:
-            t = 8 - y
+            t = 7 - y
         elif i == 1 and j == 0:
-            t = 8 - x
+            t = 7 - x
         elif i == 0 and j == -1:
             t = y
         elif i == -1 and j == 0:
             t = x
         elif i == 1 and j == 1:
-            t = min(8 - x, 8 - y)
+            t = min(7 - x, 7 - y)
         elif i == -1 and j == -1:
             t = min(x, y)
         elif i == -1 and j == 1:
-            t = min(x, 8 - y)
+            t = min(x, 7 - y)
         elif i == 1 and j == -1:
-            t = min(8 - x, y)
+            t = min(7 - x, y)
         temp=[]
         allow=0
+        r=0
         for b in range(t):
-            
+            #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"bef")
+            y += j
+            x += i
+            if max(x,y)>7 or min(x,y)<0:
+                break
             if board[y][x] == opp:
                 temp.append(10*x+y)
             if board[y][x]==0 and allow==0:
@@ -106,15 +127,16 @@ def is_geting_flipped(pos,board,pplayer):
                 break    
             if board[y][x] == pplayer:
                 output.extend(temp)
-                #print(temp)
                 temp=[]
+                break
               
             
                 
             r=board[y][x]
-            #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos)
-            y += j
-            x += i
+            #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
+            
+
+            
         if board[y][x] == pplayer:
                 output.extend(temp)
                 #print(temp)
@@ -135,11 +157,11 @@ def who_wins(board):
     winner=max(p1_score,p2_score)
     return winner
 
-
 change_board(33,board,1)
 change_board(44,board,1)
 change_board(43,board,2)
 change_board(34,board,2)
+
 print_board(board)
 POSSIBLE_MOVES=0
 while True:
@@ -152,11 +174,13 @@ while True:
     if POSSIBLE_MOVES!=[]:
         POS = 99
         while POS==99:
-            POS=int(input("Vilken pos 11 till 88 ")) or 99
-            if any(POS == p for p in POSSIBLE_MOVES) == False:
+            POS=str(input("Vilken pos 11 till 88 ")) or " "
+            if not POS.isdigit():
+                POS=99
+            if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
                 POS = 99
-        change_board(POS-11,board,PLAYER)
-        board=is_geting_flipped(POS-11,board,PLAYER)
+        change_board(int(POS)-11,board,PLAYER)
+        board=is_geting_flipped(int(POS)-11,board,PLAYER)
     print_board(board)
     PLAYER = 3 - PLAYER
      
