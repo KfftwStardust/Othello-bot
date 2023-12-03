@@ -1,11 +1,11 @@
 import math
-board=[]
-PLAYER = 1
-for q in range(8):
-    x=[]
-    for o in range(8):
-        x.append(int(0))
-    board.append(x)
+#board=[]
+#PLAYER = 1
+#for q in range(8):
+#    x=[]
+#    for o in range(8):
+#        x.append(int(0))
+#    board.append(x)
 
 
 
@@ -14,19 +14,6 @@ for q in range(8):
 ##    for p in oard:
 ##        print(p)
 ##    return
-def new_game():
-    board=[]
-    player = 1
-    for q in range(8):
-        x=[]
-        for o in range(8):
-            x.append(int(0))
-        board.append(x)
-    change_board(33,board,1)
-    change_board(44,board,1)
-    change_board(43,board,-1)
-    change_board(34,board,-1)
-    return [board,player]
 
 ##def print_board(oard):
 ##    print(' 1  2  3  4  5  6  7  8')
@@ -35,12 +22,27 @@ def new_game():
 ##            print("⚪" if cell == 1 else "⚫" if cell == 2 else "🟢", end=' ')
 ##        print()
 ##    return True
+
+def new_game():
+    board=[]
+    player = 1
+    for q in range(8):
+        x=[]
+        for o in range(8):
+            x.append(int(0))
+        board.append(x)
+    change_board(33,board,-1)
+    change_board(44,board,-1)
+    change_board(43,board,1)
+    change_board(34,board,1)
+    return [board,player]
+
 def print_board(board):
     print("   1  2  3  4  5  6  7  8")
     for i in range(8):
         print(i + 1, end=" ")
         for cell in board[i]:
-            print('⚪' if cell == 1 else '⚫' if cell == -1 else '🟢', end=' ')
+            print('⚪' if cell == -1 else '⚫' if cell == 1 else '🟢', end=' ')
         print()
 
 def change_board(pos,board,kplayer):
@@ -158,20 +160,19 @@ def who_wins(board):
     p2_score=0
     for u in range(8):
         for r in range(8):
-            if board[u][r]==1:
-                p1_score +=1
             if board[u][r]==-1:
+                p1_score +=1
+            if board[u][r]==1:
                 p2_score +=1
     if p1_score == p2_score:
         return "The game ended in a Draw"
     else:
         return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
 
-change_board(33,board,1)
-change_board(44,board,1)
-change_board(43,board,-1)
-change_board(34,board,-1)
-
+unpacker=new_game()
+board=unpacker[0]
+PLAYER=unpacker[1]
+unpacker=0
 print_board(board)
 POSSIBLE_MOVES=0
 while True:
@@ -182,7 +183,7 @@ while True:
         input("Press Enter for a new game")
         unpacker=new_game()
         board=unpacker[0]
-        player=unpacker[1]
+        PLAYER=unpacker[1]
         unpacker=0
         print_board(board)
     if POSSIBLE_MOVES!=[]:
@@ -200,4 +201,4 @@ while True:
         print_board(board)
     PLAYER = -PLAYER
      
-#Minimax(board,depth,-10^999999,10^999999,PLAYER)
+Minimax.minimax(board,depth,-10^999999,10^999999,PLAYER)
