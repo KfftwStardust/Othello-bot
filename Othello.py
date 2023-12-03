@@ -96,7 +96,7 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
 
 def is_geting_flipped(pos,board,pplayer):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
-    output=[]
+    output=[pos]
     opp = -pplayer 
     for direction in directions:
         i, j = direction
@@ -150,7 +150,7 @@ def is_geting_flipped(pos,board,pplayer):
                 #print(temp)
                 temp=[]  
     for pos in output:
-        board=change_board(pos,board,pplayer)
+        change_board(pos,board,pplayer)
     return board
 
 def who_wins(board):
@@ -195,8 +195,9 @@ while True:
                 POS=99
             if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
                 POS = 99
-        change_board(int(POS)-11,board,PLAYER)
-        board=is_geting_flipped(int(POS)-11,board,PLAYER)
+        
+        is_geting_flipped(int(POS)-11,board,PLAYER)
         print_board(board)
     PLAYER = -PLAYER
      
+#Minimax(board,depth,-10^999999,10^999999,PLAYER)
