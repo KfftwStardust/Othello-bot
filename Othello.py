@@ -28,12 +28,20 @@ def new_game():
     change_board(34,board,2)
     return [board,player]
 
-def print_board(oard):
-    for row in oard:
-        for cell in row:
+##def print_board(oard):
+##    print(' 1  2  3  4  5  6  7  8')
+##    for row in oard:
+##        for cell in row:
+##            print("⚪" if cell == 1 else "⚫" if cell == 2 else "🟢", end=' ')
+##        print()
+##    return True
+def print_board(board):
+    print("   1  2  3  4  5  6  7  8")
+    for i in range(8):
+        print(i + 1, end=" ")
+        for cell in board[i]:
             print('⚪' if cell == 1 else '⚫' if cell == 2 else '🟢', end=' ')
         print()
-    return True
 
 def change_board(pos,board,kplayer):
     temp = board[pos%10]
@@ -177,6 +185,7 @@ while True:
             print("Player 1 wins")
         elif result == "p2_win":
             print("Player 2 wins")
+        input()
     print("Possible moves:", POSSIBLE_MOVES)
     print("Player",PLAYER,"turn")
     if POSSIBLE_MOVES!=[]:
