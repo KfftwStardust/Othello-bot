@@ -170,7 +170,7 @@ def who_wins(board):
         return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
 
 
-minimax(board,depth,-10^999999,10^999999,PLAYER)
+#minimax(board,depth,-10^999999,10^999999,PLAYER)
 unpacker=new_game()
 board=unpacker[0]
 PLAYER=unpacker[1]

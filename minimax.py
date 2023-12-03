@@ -1,13 +1,54 @@
-def get_possible_moves(board, lplayer):
+import math
+def change_board(pos,board,kplayer):
+    temp = board[pos%10]
+    temp[math.floor(pos/10)]= kplayer
+    board[pos%10] = temp
+    return board
+
+def get_possible_moves(sboard, lplayer):
     POSSIBLE_MOVES = []
 
     for i in range(8):
         for j in range(8):
-            if board[i][j] == 0:
-                if is_valid_move(board, i, j, lplayer):
+            if sboard[i][j] == 0:
+                if is_valid_move(sboard, i, j, lplayer):
                     POSSIBLE_MOVES.append(j*10+i+11)
     POSSIBLE_MOVES.sort()
     return POSSIBLE_MOVES
+
+def is_valid_move(dboard, row, col, layer):
+    if dboard[row][col] != 0:
+        return False
+
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
+
+    for direction in directions:
+        if is_valid_direction(dboard, row, col, direction, layer):
+            return True
+
+    return False
+
+def is_valid_direction(cboard, row, col, direction, cplayer):
+    opponent =  - cplayer
+    i, j = direction
+
+    x, y = row + i, col + j
+    if not (0 <= x < 8 and 0 <= y < 8) or cboard[x][y] != opponent:
+        return False
+
+    x += i
+    y += j
+
+    while 0 <= x < 8 and 0 <= y < 8:
+        if cboard[x][y] == cplayer:
+            return True
+        elif cboard[x][y] == 0:
+            return False
+
+        x += i
+        y += j
+
+    return False
 
 def is_geting_flipped(pos,board,pplayer):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
@@ -98,9 +139,10 @@ def evaluate_board(board, Player):
 
 
 def minimax(position, depth, alpha, beta, Player):
-    Past_possible_moves=Possible_moves
+    Possible_moves=[1]
+    Past_possible_moves=Possible_moves if Possible_moves !=[] else []
     Possible_moves=get_possible_moves(position,Player)
-    if depth == 0 or (Possible_moves ==0 and Past_possible_moves==0):
+    if depth == 0 or (Possible_moves ==[] and Past_possible_moves==[]):
         return evaluate_board(position,Player) 
     
     temp=[]
