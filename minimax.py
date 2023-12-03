@@ -68,31 +68,61 @@ def is_geting_flipped(pos,board,pplayer):
         change_board(pos,board,pplayer)
     return board
 
+def evaluate_board(board, Player):
+
+    score = 0
+
+    # Define the weights for each position on the board
+    weights = [
+        [100, -20, 10, 5, 5, 10, -20, 100],
+        [-20, -50, -2, -2, -2, -2, -50, -20],
+        [10, -2, -1, -1, -1, -1, -2, 10],
+        [5, -2, -1, -1, -1, -1, -2, 5],
+        [5, -2, -1, -1, -1, -1, -2, 5],
+        [10, -2, -1, -1, -1, -1, -2, 10],
+        [-20, -50, -2, -2, -2, -2, -50, -20],
+        [100, -20, 10, 5, 5, 10, -20, 100],
+    ]
+
+    # Calculate the score based on the player's pieces and the weights
+    for i in range(8):
+        for j in range(8):
+            if board[i][j] == Player:
+                score += weights[i][j]
+            elif board[i][j] == -Player:
+                score -= weights[i][j]
+
+    return score
+# Den är nog skit Chatgpt skrev den
+
+
 
 def minimax(position, depth, alpha, beta, Player):
-    #if depth == 0 or game over in position
-	#	return static evaluation of position
-	temp=[]
-	for move in get_possible_moves(position,Player):
-		temp.append(is_geting_flipped(move,position,Player))
-	
-	position=temp
-	
-	if Player<0:
-		maxEval = -10**99999999999
-		for each in position:
-			eval = minimax(each, depth - 1, alpha, beta, -Player)
-			maxEval = max(maxEval, eval)
-			alpha = max(alpha, eval)
-			if beta <= alpha:
-				break
-		return maxEval
-	else:
-		minEval = 10**999999999999
-		for each in position:
-			eval = minimax(each, depth - 1, alpha, beta, -Player)
-			minEval = min(minEval, eval)
-			beta = min(beta, eval)
-			if beta <= alpha:
-				break
-		return minEval
+    Past_possible_moves=Possible_moves
+    Possible_moves=get_possible_moves(position,Player)
+    if depth == 0 or (Possible_moves ==0 and Past_possible_moves==0):
+        return evaluate_board(position,Player) 
+    
+    temp=[]
+    for move in Possible_moves:
+        temp.append(is_geting_flipped(move,position,Player))
+    position=temp
+    if Player<0:
+        maxEval = -10**99999999999
+        for each in position:
+            eval = minimax(each, depth - 1, alpha, beta, -Player)
+            maxEval = max(maxEval, eval)
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break
+        return maxEval	
+    
+    else:
+        minEval = 10**999999999999
+        for each in position:
+            eval = minimax(each, depth - 1, alpha, beta, -Player)
+            minEval = min(minEval, eval)
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break
+        return minEval
