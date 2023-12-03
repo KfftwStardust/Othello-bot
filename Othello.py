@@ -24,8 +24,8 @@ def new_game():
         board.append(x)
     change_board(33,board,1)
     change_board(44,board,1)
-    change_board(43,board,2)
-    change_board(34,board,2)
+    change_board(43,board,-1)
+    change_board(34,board,-1)
     return [board,player]
 
 ##def print_board(oard):
@@ -40,7 +40,7 @@ def print_board(board):
     for i in range(8):
         print(i + 1, end=" ")
         for cell in board[i]:
-            print('⚪' if cell == 1 else '⚫' if cell == 2 else '🟢', end=' ')
+            print('⚪' if cell == 1 else '⚫' if cell == -1 else '🟢', end=' ')
         print()
 
 def change_board(pos,board,kplayer):
@@ -73,7 +73,7 @@ def is_valid_move(dboard, row, col, layer):
     return False
 
 def is_valid_direction(cboard, row, col, direction, cplayer):
-    opponent = 3 - cplayer
+    opponent =  - cplayer
     i, j = direction
 
     x, y = row + i, col + j
@@ -97,7 +97,7 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
 def is_geting_flipped(pos,board,pplayer):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
     output=[]
-    opp=2 if pplayer ==1 else 1
+    opp = -pplayer 
     for direction in directions:
         i, j = direction
         y=pos%10
@@ -160,17 +160,17 @@ def who_wins(board):
         for r in range(8):
             if board[u][r]==1:
                 p1_score +=1
-            if board[u][r]==2:
+            if board[u][r]==-1:
                 p2_score +=1
     if p1_score == p2_score:
-        return "draw"
+        return "The game ended in a Draw"
     else:
-        return "p1_win" if p1_score > p2_score else "p2_win"
+        return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
 
 change_board(33,board,1)
 change_board(44,board,1)
-change_board(43,board,2)
-change_board(34,board,2)
+change_board(43,board,-1)
+change_board(34,board,-1)
 
 print_board(board)
 POSSIBLE_MOVES=0
@@ -178,17 +178,16 @@ while True:
     PAST_POSSIBLE_MOVES=POSSIBLE_MOVES
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
     if not PAST_POSSIBLE_MOVES and not POSSIBLE_MOVES:
-        result = who_wins(board)
-        if result == "draw":
-            print("The game ended in a Draw")
-        elif result == "p1_win":
-            print("Player 1 wins")
-        elif result == "p2_win":
-            print("Player 2 wins")
-        input()
-    print("Possible moves:", POSSIBLE_MOVES)
-    print("Player",PLAYER,"turn")
+        print(who_wins(board))
+        input("Press Enter for a new game")
+        unpacker=new_game()
+        board=unpacker[0]
+        player=unpacker[1]
+        unpacker=0
+        print_board(board)
     if POSSIBLE_MOVES!=[]:
+        print("Possible moves:", POSSIBLE_MOVES)
+        print("Player",PLAYER if PLAYER==1 else 2,"turn")
         POS = 99
         while POS==99:
             POS=str(input("Vilken pos 11 till 88 ")) or " "
@@ -198,6 +197,6 @@ while True:
                 POS = 99
         change_board(int(POS)-11,board,PLAYER)
         board=is_geting_flipped(int(POS)-11,board,PLAYER)
-    print_board(board)
-    PLAYER = 3 - PLAYER
+        print_board(board)
+    PLAYER = -PLAYER
      
