@@ -1,4 +1,5 @@
 import math
+from minimax import minimax
 #board=[]
 #PLAYER = 1
 #for q in range(8):
@@ -22,7 +23,6 @@ import math
 ##            print("⚪" if cell == 1 else "⚫" if cell == 2 else "🟢", end=' ')
 ##        print()
 ##    return True
-
 def new_game():
     board=[]
     player = 1
@@ -169,6 +169,8 @@ def who_wins(board):
     else:
         return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
 
+
+minimax(board,depth,-10^999999,10^999999,PLAYER)
 unpacker=new_game()
 board=unpacker[0]
 PLAYER=unpacker[1]
@@ -201,4 +203,3 @@ while True:
         print_board(board)
     PLAYER = -PLAYER
      
-Minimax.minimax(board,depth,-10^999999,10^999999,PLAYER)
