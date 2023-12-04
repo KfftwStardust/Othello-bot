@@ -1,4 +1,3 @@
-#import math
 from functions import *
 
 """
@@ -50,7 +49,8 @@ def print_board(board):
             print('⚪' if cell == -1 else '⚫' if cell == 1 else '🟢', end=' ')
         print()
 
-"""def change_board(pos,board,kplayer):
+"""
+def change_board(pos,board,kplayer):
     temp = board[pos%10]
     temp[math.floor(pos/10)]= kplayer
     board[pos%10] = temp
@@ -199,6 +199,8 @@ while True:
         POS = 99
         while POS==99:
             POS=str(input("Vilken pos 11 till 88 ")) or " "
+            if len(POS)==2:
+                POS=str(ord(POS[0:1])-96)+str(POS[1:2])
             if not POS.isdigit():
                 POS=99
             if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
