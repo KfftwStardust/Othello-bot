@@ -8,16 +8,12 @@ for q in range(8):
     for o in range(8):
         x.append(int(0))
     board.append(x)
-    """
-
-"""
+    
 def print_board(oard):
     for p in oard:
         print(p)
    return
-"""
 
-"""
 def print_board(oard):
     print(' 1  2  3  4  5  6  7  8')
     for row in oard:
