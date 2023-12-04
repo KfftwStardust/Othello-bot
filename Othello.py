@@ -1,28 +1,32 @@
-import math
-from minimax import minimax
-#board=[]
-#PLAYER = 1
-#for q in range(8):
-#    x=[]
-#    for o in range(8):
-#        x.append(int(0))
-#    board.append(x)
+from functions import *
 
+"""
+board=[]
+PLAYER = 1
+for q in range(8):
+    x=[]
+    for o in range(8):
+        x.append(int(0))
+    board.append(x)
+    """
 
+"""
+def print_board(oard):
+    for p in oard:
+        print(p)
+   return
+"""
 
+"""
+def print_board(oard):
+    print(' 1  2  3  4  5  6  7  8')
+    for row in oard:
+        for cell in row:
+            print("⚪" if cell == 1 else "⚫" if cell == 2 else "🟢", end=' ')
+        print()
+    return True
+"""
 
-##def print_board(oard):
-##    for p in oard:
-##        print(p)
-##    return
-
-##def print_board(oard):
-##    print(' 1  2  3  4  5  6  7  8')
-##    for row in oard:
-##        for cell in row:
-##            print("⚪" if cell == 1 else "⚫" if cell == 2 else "🟢", end=' ')
-##        print()
-##    return True
 def new_game():
     board=[]
     player = 1
@@ -45,6 +49,7 @@ def print_board(board):
             print('⚪' if cell == -1 else '⚫' if cell == 1 else '🟢', end=' ')
         print()
 
+"""
 def change_board(pos,board,kplayer):
     temp = board[pos%10]
     temp[math.floor(pos/10)]= kplayer
@@ -56,7 +61,7 @@ def get_possible_moves(sboard, lplayer):
 
     for i in range(8):
         for j in range(8):
-            if board[i][j] == 0:
+            if sboard[i][j] == 0:
                 if is_valid_move(sboard, i, j, lplayer):
                     POSSIBLE_MOVES.append(j*10+i+11)
     POSSIBLE_MOVES.sort()
@@ -154,7 +159,7 @@ def is_geting_flipped(pos,board,pplayer):
     for pos in output:
         change_board(pos,board,pplayer)
     return board
-
+"""
 def who_wins(board):
     p1_score=0
     p2_score=0
@@ -194,6 +199,8 @@ while True:
         POS = 99
         while POS==99:
             POS=str(input("Vilken pos 11 till 88 ")) or " "
+            if len(POS)==2:
+                POS=str(ord(POS[0:1])-96)+str(POS[1:2])
             if not POS.isdigit():
                 POS=99
             if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
