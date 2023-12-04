@@ -1,50 +1,4 @@
 import math
-from minimax import minimax
-#board=[]
-#PLAYER = 1
-#for q in range(8):
-#    x=[]
-#    for o in range(8):
-#        x.append(int(0))
-#    board.append(x)
-
-
-
-
-##def print_board(oard):
-##    for p in oard:
-##        print(p)
-##    return
-
-##def print_board(oard):
-##    print(' 1  2  3  4  5  6  7  8')
-##    for row in oard:
-##        for cell in row:
-##            print("⚪" if cell == 1 else "⚫" if cell == 2 else "🟢", end=' ')
-##        print()
-##    return True
-def new_game():
-    board=[]
-    player = 1
-    for q in range(8):
-        x=[]
-        for o in range(8):
-            x.append(int(0))
-        board.append(x)
-    change_board(33,board,-1)
-    change_board(44,board,-1)
-    change_board(43,board,1)
-    change_board(34,board,1)
-    return [board,player]
-
-def print_board(board):
-    print("   1  2  3  4  5  6  7  8")
-    for i in range(8):
-        print(i + 1, end=" ")
-        for cell in board[i]:
-            print('⚪' if cell == -1 else '⚫' if cell == 1 else '🟢', end=' ')
-        print()
-
 def change_board(pos,board,kplayer):
     temp = board[pos%10]
     temp[math.floor(pos/10)]= kplayer
@@ -56,7 +10,7 @@ def get_possible_moves(sboard, lplayer):
 
     for i in range(8):
         for j in range(8):
-            if board[i][j] == 0:
+            if sboard[i][j] == 0:
                 if is_valid_move(sboard, i, j, lplayer):
                     POSSIBLE_MOVES.append(j*10+i+11)
     POSSIBLE_MOVES.sort()
@@ -155,51 +109,62 @@ def is_geting_flipped(pos,board,pplayer):
         change_board(pos,board,pplayer)
     return board
 
-def who_wins(board):
-    p1_score=0
-    p2_score=0
-    for u in range(8):
-        for r in range(8):
-            if board[u][r]==-1:
-                p1_score +=1
-            if board[u][r]==1:
-                p2_score +=1
-    if p1_score == p2_score:
-        return "The game ended in a Draw"
+def evaluate_board(board, Player):
+
+    score = 0
+
+    # Define the weights for each position on the board
+    weights = [
+        [100, -20, 10, 5, 5, 10, -20, 100],
+        [-20, -50, -2, -2, -2, -2, -50, -20],
+        [10, -2, -1, -1, -1, -1, -2, 10],
+        [5, -2, -1, -1, -1, -1, -2, 5],
+        [5, -2, -1, -1, -1, -1, -2, 5],
+        [10, -2, -1, -1, -1, -1, -2, 10],
+        [-20, -50, -2, -2, -2, -2, -50, -20],
+        [100, -20, 10, 5, 5, 10, -20, 100],
+    ]
+
+    # Calculate the score based on the player's pieces and the weights
+    for i in range(8):
+        for j in range(8):
+            if board[i][j] == Player:
+                score += weights[i][j]
+            elif board[i][j] == -Player:
+                score -= weights[i][j]
+
+    return score
+# Den är nog skit Chatgpt skrev den
+
+
+
+def minimax(position, depth, alpha, beta, Player):
+    Possible_moves=[1]
+    Past_possible_moves=Possible_moves if Possible_moves !=[] else []
+    Possible_moves=get_possible_moves(position,Player)
+    if depth == 0 or (Possible_moves ==[] and Past_possible_moves==[]):
+        return evaluate_board(position,Player) 
+    
+    temp=[]
+    for move in Possible_moves:
+        temp.append(is_geting_flipped(move,position,Player))
+    position=temp
+    if Player<0:
+        maxEval = -10**99999999999
+        for each in position:
+            eval = minimax(each, depth - 1, alpha, beta, -Player)
+            maxEval = max(maxEval, eval)
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break
+        return maxEval	
+    
     else:
-        return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
-
-
-#minimax(board,depth,-10^999999,10^999999,PLAYER)
-unpacker=new_game()
-board=unpacker[0]
-PLAYER=unpacker[1]
-unpacker=0
-print_board(board)
-POSSIBLE_MOVES=0
-while True:
-    PAST_POSSIBLE_MOVES=POSSIBLE_MOVES
-    POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
-    if not PAST_POSSIBLE_MOVES and not POSSIBLE_MOVES:
-        print(who_wins(board))
-        input("Press Enter for a new game")
-        unpacker=new_game()
-        board=unpacker[0]
-        PLAYER=unpacker[1]
-        unpacker=0
-        print_board(board)
-    if POSSIBLE_MOVES!=[]:
-        print("Possible moves:", POSSIBLE_MOVES)
-        print("Player",PLAYER if PLAYER==1 else 2,"turn")
-        POS = 99
-        while POS==99:
-            POS=str(input("Vilken pos 11 till 88 ")) or " "
-            if not POS.isdigit():
-                POS=99
-            if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
-                POS = 99
-        
-        is_geting_flipped(int(POS)-11,board,PLAYER)
-        print_board(board)
-    PLAYER = -PLAYER
-     
+        minEval = 10**999999999999
+        for each in position:
+            eval = minimax(each, depth - 1, alpha, beta, -Player)
+            minEval = min(minEval, eval)
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break
+        return minEval
