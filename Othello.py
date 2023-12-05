@@ -8,16 +8,12 @@ for q in range(8):
     for o in range(8):
         x.append(int(0))
     board.append(x)
-    """
-
-"""
+    
 def print_board(oard):
     for p in oard:
         print(p)
    return
-"""
 
-"""
 def print_board(oard):
     print(' 1  2  3  4  5  6  7  8')
     for row in oard:
@@ -41,12 +37,16 @@ def new_game():
     change_board(34,board,1)
     return [board,player]
 
-def print_board(board):
+def print_board(board, POSSIBLE_MOVES):
+    OSSIBLE_MOVES=POSSIBLE_MOVES
     print("   1  2  3  4  5  6  7  8")
     for i in range(8):
         print(i + 1, end=" ")
-        for cell in board[i]:
-            print('⚪' if cell == -1 else '⚫' if cell == 1 else '🟢', end=' ')
+        for j in range(8):
+            if any(int(10*int(j)+int(i)+11) == p for p in OSSIBLE_MOVES):
+                print('🔵', end=' ')
+            else:                          
+                print('⚪' if board[i][j] == -1 else '⚫' if board[i][j] == 1 else '🟢', end=' ')
         print()
 
 """
@@ -180,11 +180,13 @@ unpacker=new_game()
 board=unpacker[0]
 PLAYER=unpacker[1]
 unpacker=0
-print_board(board)
-POSSIBLE_MOVES=0
+POSSIBLE_MOVES=[]
+
 while True:
+    
     PAST_POSSIBLE_MOVES=POSSIBLE_MOVES
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
+    print_board(board,POSSIBLE_MOVES)
     if not PAST_POSSIBLE_MOVES and not POSSIBLE_MOVES:
         print(who_wins(board))
         input("Press Enter for a new game")
@@ -192,21 +194,20 @@ while True:
         board=unpacker[0]
         PLAYER=unpacker[1]
         unpacker=0
-        print_board(board)
+        print_board(board,POSSIBLE_MOVES)
     if POSSIBLE_MOVES!=[]:
         print("Possible moves:", POSSIBLE_MOVES)
         print("Player",PLAYER if PLAYER==1 else 2,"turn")
         POS = 99
         while POS==99:
             POS=str(input("Vilken pos 11 till 88 ")) or " "
-            if len(POS)==2:
-                POS=str(ord(POS[0:1])-96)+str(POS[1:2])
+#            if len(POS)==2:
+                #POS=str(ord(POS[0:1])-96)+str(POS[1:2])
             if not POS.isdigit():
                 POS=99
             if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
                 POS = 99
         
         is_geting_flipped(int(POS)-11,board,PLAYER)
-        print_board(board)
     PLAYER = -PLAYER
      
