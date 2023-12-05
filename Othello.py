@@ -44,9 +44,9 @@ def print_board(board, POSSIBLE_MOVES):
         print(i + 1, end=" ")
         for j in range(8):
             if any(int(10*int(j)+int(i)+11) == p for p in OSSIBLE_MOVES):
-                print('🔵', end=' ')
+                print('🟢', end=' ') #🟢🔵
             else:                          
-                print('⚪' if board[i][j] == -1 else '⚫' if board[i][j] == 1 else '🟢', end=' ')
+                print('⚪' if board[i][j] == -1 else '⚫' if board[i][j] == 1 else '🟩', end=' ')
         print()
 
 """
