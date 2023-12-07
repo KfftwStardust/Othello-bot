@@ -61,6 +61,22 @@ def is_geting_flipped(pos,board,pplayer):
         temp=[]
         allow=0
         r=0
+        """if i == 0 and j == 1:
+            t = 7 - y
+        elif i == 1 and j == 0:
+            t = 7 - x
+        elif i == 0 and j == -1:
+            t = y
+        elif i == -1 and j == 0:
+            t = x
+        elif i == 1 and j == 1:
+            t = min(7 - x, 7 - y)
+        elif i == -1 and j == -1:
+            t = min(x, y)
+        elif i == -1 and j == 1:
+            t = min(x, 7 - y)
+        elif i == 1 and j == -1:
+            t = min(7 - x, y)"""
         for b in range(8):
             #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"bef")
             y += j
@@ -79,13 +95,15 @@ def is_geting_flipped(pos,board,pplayer):
                 break
             r=board[y][x]
             #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
-        if board[y][x] == pplayer:
-                output.extend(temp)
-                #print(temp)
-                temp=[]  
+        #if board[y][x] == pplayer:
+                #output.extend(temp)
+                ##print(temp)
+               # temp=[]  
     for pos in output:
         change_board(pos,board,pplayer)
     return board
+
+
 
 def evaluate_board(board, Player):
 
@@ -117,8 +135,6 @@ def evaluate_board(board, Player):
 
 
 def minimax(position, depth, alpha, beta, Player):
-    Possible_moves=[1]
-    Past_possible_moves=Possible_moves if Possible_moves !=[] else []
     Possible_moves=get_possible_moves(position,Player)
     if depth == 0 :
         return evaluate_board(position,Player) 
@@ -127,11 +143,10 @@ def minimax(position, depth, alpha, beta, Player):
     for move in Possible_moves:
         temp.append(is_geting_flipped(move,position,Player))
     position=temp
-    print(position)
-    if Player>0:
-        maxEval = -10**99999999999
+    if Player==-1:
+        maxEval = -10**9
         for each in position:
-            eval = minimax(each, depth - 1, alpha, beta, -Player)
+            eval = minimax(each, depth - 1, alpha, beta, 1)
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
@@ -139,11 +154,19 @@ def minimax(position, depth, alpha, beta, Player):
         return maxEval	
     
     else:
-        minEval = 10**999999999999
+        minEval = 10**9
         for each in position:
-            eval = minimax(each, depth - 1, alpha, beta, -Player)
+            eval = minimax(each, depth - 1, alpha, beta, -1)
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
                 break
         return minEval
+
+def get_best_move(board,Possible_moves):
+    
+    temp=[]
+    for each in Possible_moves:
+        temp.append(minimax(is_geting_flipped(each-11,board,-1),5,-10^9,10^9,-1))
+    best_move=Possible_moves[temp.index(max(temp))]
+    return best_move

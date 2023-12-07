@@ -77,15 +77,10 @@ while True:
                 if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
                     POS = 99
         if PLAYER ==-1:
-            
+            POS=get_best_move(board,POSSIBLE_MOVES)
                 
-            print(minimax(board,1,-10^999999,10^999999,PLAYER))
+            print(POS)
             input()
-            
-                  
-            
-
-            
         is_geting_flipped(int(POS)-11,board,PLAYER)
     PLAYER = -PLAYER
      
