@@ -51,7 +51,7 @@ unpacker=0
 POSSIBLE_MOVES=[]
 
 while True:
-    
+    POS=0
     PAST_POSSIBLE_MOVES=POSSIBLE_MOVES
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
     print_board(board,POSSIBLE_MOVES)
@@ -64,7 +64,7 @@ while True:
         unpacker=0
         print_board(board,POSSIBLE_MOVES)
     if POSSIBLE_MOVES!=[]:
-        if PLAYER==1:
+        if PLAYER!=0:
             print("Possible moves:", POSSIBLE_MOVES)
             print("Player",PLAYER if PLAYER==1 else 2,"turn")
             POS = 99
@@ -76,11 +76,11 @@ while True:
                     POS=99
                 if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
                     POS = 99
-        if PLAYER ==-1:
-            POS=get_best_move(board,POSSIBLE_MOVES)
-                
+            is_geting_flipped(int(POS)-11,board,PLAYER)
+        """if PLAYER ==-1:
+            POS=get_best_move(board,POSSIBLE_MOVES) 
             print(POS)
-            input()
-        is_geting_flipped(int(POS)-11,board,PLAYER)
+            
+            is_geting_flipped(int(POS)-11,board,PLAYER)"""
     PLAYER = -PLAYER
      

@@ -163,10 +163,10 @@ def minimax(position, depth, alpha, beta, Player):
                 break
         return minEval
 
-def get_best_move(board,Possible_moves):
+def get_best_move(boar,Possible_moves):
     
-    temp=[]
+    te=[]
     for each in Possible_moves:
-        temp.append(minimax(is_geting_flipped(each-11,board,-1),5,-10^9,10^9,-1))
-    best_move=Possible_moves[temp.index(max(temp))]
+        te.append(minimax(is_geting_flipped(each-11,boar,-1),5,-10^9,10^9,-1))
+    best_move=Possible_moves[te.index(max(te))]
     return best_move
