@@ -14,17 +14,7 @@ def new_game():
     change_board(34,board,1)
     return board
 
-def print_board(board, POSSIBLE_MOVES):
-    OSSIBLE_MOVES=POSSIBLE_MOVES
-    print("   1  2  3  4  5  6  7  8")
-    for i in range(8):
-        print(i + 1, end=" ")
-        for j in range(8):
-            if any(int(10*int(j)+int(i)+11) == p for p in OSSIBLE_MOVES):
-                print('🟢', end=' ') #🟢🔵
-            else:                          
-                print('⚪' if board[i][j] == -1 else '⚫' if board[i][j] == 1 else '🟩', end=' ')
-        print()
+
 
 
 def who_wins(board):
@@ -81,7 +71,7 @@ while True:
         if PLAYER ==-1:
             POS=get_best_move(old_board) 
             print(POS)
-            input()
+            print()
             #print_board(board,POSSIBLE_MOVES)   
             board=is_geting_flipped(int(POS)-11,board,PLAYER)
     PLAYER = -PLAYER

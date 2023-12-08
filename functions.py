@@ -1,6 +1,9 @@
 import math
 def change_board(pos,jboard,kplayer):
-    jboard[pos%10][math.floor(pos/10)]= kplayer
+    
+    temp = jboard[pos%10]
+    temp[math.floor(pos/10)]= kplayer
+    jboard[pos%10] = temp
     return jboard
 
 def get_possible_moves(sboard, lplayer):
@@ -13,6 +16,18 @@ def get_possible_moves(sboard, lplayer):
                     POSSIBLE_MOVES.append(j*10+i+11)
     POSSIBLE_MOVES.sort()
     return POSSIBLE_MOVES
+
+def print_board(board, POSSIBLE_MOVES):
+    OSSIBLE_MOVES=POSSIBLE_MOVES
+    print("   1  2  3  4  5  6  7  8")
+    for i in range(8):
+        print(i + 1, end=" ")
+        for j in range(8):
+            if any(int(10*int(j)+int(i)+11) == p for p in OSSIBLE_MOVES):
+                print('🟢', end=' ') #🟢🔵
+            else:                          
+                print('⚪' if board[i][j] == -1 else '⚫' if board[i][j] == 1 else '🟩', end=' ')
+        print()
 
 def is_valid_move(dboard, row, col, layer):
     if dboard[row][col] != 0:
@@ -61,7 +76,7 @@ def is_geting_flipped(pos,iboard,pplayer):
         allow=0
         r=0
         for b in range(8):
-            #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"bef")
+            #print("temp",temp,"output",output,"x",x,"y",y,"board",r,"b",b,"direction",direction,"pos",pos,"bef")
             y += j
             x += i
             if max(x,y)>7 or min(x,y)<0:
@@ -76,8 +91,8 @@ def is_geting_flipped(pos,iboard,pplayer):
                 output.extend(temp)
                 temp=[]
                 break
-            #r=iboard[y][x]
-            #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
+            r=new_board[y][x]
+            #print("temp",temp,"output",output,"x",x,"y",y,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
         #if board[y][x] == pplayer:
                 #output.extend(temp)
                 ##print(temp)
@@ -107,12 +122,12 @@ def evaluate_board(lboard, Player):
     # Calculate the score based on the player's pieces and the weights
     for i in range(8):
         for j in range(8):
-            if lboard[i][j] == Player:
+            if lboard[i][j] == 1:
                 score += weights[i][j]
-            elif lboard[i][j] == -Player:
+            elif lboard[i][j] == -1:
                 score -= weights[i][j]
-
-    return score
+    score = score*Player 
+    return score 
 # Den är nog skit Chatgpt skrev den
 
 
@@ -124,7 +139,7 @@ def minimax(position, depth, alpha, beta, Player):
     
     temp=[]
     for move in Posible_moves:
-        temp.append(is_geting_flipped(move,position,Player))
+        temp.append(is_geting_flipped(move-11,position,Player))
     position=temp
     if Player==-1:
         maxEval = -10**9
@@ -151,7 +166,7 @@ def get_best_move(boar):
     te=[]
     for each in Possble_moves:
         oar=boar
-        te.append(minimax(is_geting_flipped(int(each)-11,oar,-1),0,-10**9,10**9,-1))
+        te.append(minimax(is_geting_flipped((int(each)-11),oar,-1),2,-10**9,10**9,-1))
     m=max(te)
     y=te.index(m)
     best_move=Possble_moves[y]
