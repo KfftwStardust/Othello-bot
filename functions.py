@@ -1,8 +1,6 @@
 import math
 def change_board(pos,jboard,kplayer):
-    temp = jboard[pos%10]
-    temp[math.floor(pos/10)]= kplayer
-    jboard[pos%10] = temp
+    jboard[pos%10][math.floor(pos/10)]= kplayer
     return jboard
 
 def get_possible_moves(sboard, lplayer):
@@ -54,6 +52,7 @@ def is_geting_flipped(pos,iboard,pplayer):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
     output=[pos]
     opp = -pplayer 
+    new_board = [row[:] for row in iboard]
     for direction in directions:
         i, j = direction
         y=pos%10
@@ -67,25 +66,25 @@ def is_geting_flipped(pos,iboard,pplayer):
             x += i
             if max(x,y)>7 or min(x,y)<0:
                 break
-            if iboard[y][x] == opp:
+            if new_board[y][x] == opp:
                 temp.append(10*x+y)
-            if iboard[y][x]==0 and allow==0:
+            if new_board[y][x]==0 and allow==0:
                 allow = 1
                 temp=[]
                 break    
-            if iboard[y][x] == pplayer:
+            if new_board[y][x] == pplayer:
                 output.extend(temp)
                 temp=[]
                 break
-            r=iboard[y][x]
+            #r=iboard[y][x]
             #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
         #if board[y][x] == pplayer:
                 #output.extend(temp)
                 ##print(temp)
                # temp=[]  
     for pos in output:
-        change_board(pos,iboard,pplayer)
-    return iboard
+        new_board=change_board(pos,new_board,pplayer)
+    return new_board
 
 
 
@@ -151,7 +150,8 @@ def get_best_move(boar):
     Possble_moves=get_possible_moves(boar,-1)
     te=[]
     for each in Possble_moves:
-        te.append(minimax(is_geting_flipped(int(each)-11,boar,-1),0,-10^9,10^9,-1))
+        oar=boar
+        te.append(minimax(is_geting_flipped(int(each)-11,oar,-1),0,-10**9,10**9,-1))
     m=max(te)
     y=te.index(m)
     best_move=Possble_moves[y]
