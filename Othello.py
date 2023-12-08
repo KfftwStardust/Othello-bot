@@ -3,7 +3,6 @@ from functions import *
 
 def new_game():
     board=[]
-    player = 1
     for q in range(8):
         x=[]
         for o in range(8):
@@ -13,7 +12,7 @@ def new_game():
     change_board(44,board,-1)
     change_board(43,board,1)
     change_board(34,board,1)
-    return [board,player]
+    return board
 
 def print_board(board, POSSIBLE_MOVES):
     OSSIBLE_MOVES=POSSIBLE_MOVES
@@ -44,27 +43,27 @@ def who_wins(board):
 
 
 #minimax(board,depth,-10^999999,10^999999,PLAYER)
-unpacker=new_game()
-board=unpacker[0]
-PLAYER=unpacker[1]
-unpacker=0
-POSSIBLE_MOVES=[]
+
+board=new_game()
+PLAYER=1
+
+
 
 while True:
     POS=0
-    PAST_POSSIBLE_MOVES=POSSIBLE_MOVES
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
     print_board(board,POSSIBLE_MOVES)
-    if not PAST_POSSIBLE_MOVES and not POSSIBLE_MOVES:
+    if get_possible_moves(board,-PLAYER)==[] and POSSIBLE_MOVES==[]:
         print(who_wins(board))
         input("Press Enter for a new game")
-        unpacker=new_game()
-        board=unpacker[0]
-        PLAYER=unpacker[1]
-        unpacker=0
+        
+        board=new_game()
+        PLAYER=1
+        
         print_board(board,POSSIBLE_MOVES)
     if POSSIBLE_MOVES!=[]:
-        if PLAYER!=0:
+        tboard=board
+        if PLAYER==1:
             print("Possible moves:", POSSIBLE_MOVES)
             print("Player",PLAYER if PLAYER==1 else 2,"turn")
             POS = 99
@@ -77,10 +76,11 @@ while True:
                 if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
                     POS = 99
             is_geting_flipped(int(POS)-11,board,PLAYER)
-        """if PLAYER ==-1:
-            POS=get_best_move(board,POSSIBLE_MOVES) 
+        if PLAYER ==-1:
+            POS=get_best_move(tboard) 
             print(POS)
-            
-            is_geting_flipped(int(POS)-11,board,PLAYER)"""
+            input()
+            print_board(board,POSSIBLE_MOVES)   
+            is_geting_flipped(int(POS)-11,tboard,PLAYER)
     PLAYER = -PLAYER
      

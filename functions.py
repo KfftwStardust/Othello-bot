@@ -1,9 +1,9 @@
 import math
-def change_board(pos,board,kplayer):
-    temp = board[pos%10]
+def change_board(pos,jboard,kplayer):
+    temp = jboard[pos%10]
     temp[math.floor(pos/10)]= kplayer
-    board[pos%10] = temp
-    return board
+    jboard[pos%10] = temp
+    return jboard
 
 def get_possible_moves(sboard, lplayer):
     POSSIBLE_MOVES = []
@@ -50,7 +50,7 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
 
     return False
 
-def is_geting_flipped(pos,board,pplayer):
+def is_geting_flipped(pos,iboard,pplayer):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
     output=[pos]
     opp = -pplayer 
@@ -61,51 +61,35 @@ def is_geting_flipped(pos,board,pplayer):
         temp=[]
         allow=0
         r=0
-        """if i == 0 and j == 1:
-            t = 7 - y
-        elif i == 1 and j == 0:
-            t = 7 - x
-        elif i == 0 and j == -1:
-            t = y
-        elif i == -1 and j == 0:
-            t = x
-        elif i == 1 and j == 1:
-            t = min(7 - x, 7 - y)
-        elif i == -1 and j == -1:
-            t = min(x, y)
-        elif i == -1 and j == 1:
-            t = min(x, 7 - y)
-        elif i == 1 and j == -1:
-            t = min(7 - x, y)"""
         for b in range(8):
             #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"bef")
             y += j
             x += i
             if max(x,y)>7 or min(x,y)<0:
                 break
-            if board[y][x] == opp:
+            if iboard[y][x] == opp:
                 temp.append(10*x+y)
-            if board[y][x]==0 and allow==0:
+            if iboard[y][x]==0 and allow==0:
                 allow = 1
                 temp=[]
                 break    
-            if board[y][x] == pplayer:
+            if iboard[y][x] == pplayer:
                 output.extend(temp)
                 temp=[]
                 break
-            r=board[y][x]
+            r=iboard[y][x]
             #print("temp",temp,"output",output,"x",x,"y",y,"t",t,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
         #if board[y][x] == pplayer:
                 #output.extend(temp)
                 ##print(temp)
                # temp=[]  
     for pos in output:
-        change_board(pos,board,pplayer)
-    return board
+        change_board(pos,iboard,pplayer)
+    return iboard
 
 
 
-def evaluate_board(board, Player):
+def evaluate_board(lboard, Player):
 
     score = 0
 
@@ -124,9 +108,9 @@ def evaluate_board(board, Player):
     # Calculate the score based on the player's pieces and the weights
     for i in range(8):
         for j in range(8):
-            if board[i][j] == Player:
+            if lboard[i][j] == Player:
                 score += weights[i][j]
-            elif board[i][j] == -Player:
+            elif lboard[i][j] == -Player:
                 score -= weights[i][j]
 
     return score
@@ -135,12 +119,12 @@ def evaluate_board(board, Player):
 
 
 def minimax(position, depth, alpha, beta, Player):
-    Possible_moves=get_possible_moves(position,Player)
-    if depth == 0 :
+    Posible_moves=get_possible_moves(position,Player)
+    if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
         return evaluate_board(position,Player) 
     
     temp=[]
-    for move in Possible_moves:
+    for move in Posible_moves:
         temp.append(is_geting_flipped(move,position,Player))
     position=temp
     if Player==-1:
@@ -163,10 +147,12 @@ def minimax(position, depth, alpha, beta, Player):
                 break
         return minEval
 
-def get_best_move(boar,Possible_moves):
-    
+def get_best_move(boar):
+    Possble_moves=get_possible_moves(boar,-1)
     te=[]
-    for each in Possible_moves:
-        te.append(minimax(is_geting_flipped(each-11,boar,-1),5,-10^9,10^9,-1))
-    best_move=Possible_moves[te.index(max(te))]
+    for each in Possble_moves:
+        te.append(minimax(is_geting_flipped(int(each)-11,boar,-1),0,-10^9,10^9,-1))
+    m=max(te)
+    y=te.index(m)
+    best_move=Possble_moves[y]
     return best_move
