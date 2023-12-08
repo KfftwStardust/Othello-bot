@@ -166,7 +166,7 @@ def get_best_move(boar):
     te=[]
     for each in Possble_moves:
         oar=boar
-        te.append(minimax(is_geting_flipped((int(each)-11),oar,-1),2,-10**9,10**9,-1))
+        te.append(minimax(is_geting_flipped((int(each)-11),oar,-1),6,-10**9,10**9,-1))
     m=max(te)
     y=te.index(m)
     best_move=Possble_moves[y]

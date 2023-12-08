@@ -44,6 +44,7 @@ while True:
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
     #print_board(board,POSSIBLE_MOVES)
     if get_possible_moves(board,-PLAYER)==[] and POSSIBLE_MOVES==[]:
+        print_board(board,POSSIBLE_MOVES)
         print(who_wins(board))
         input("Press Enter for a new game")
         
@@ -52,10 +53,11 @@ while True:
         
         
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
-    print_board(board,POSSIBLE_MOVES)
+    
     if POSSIBLE_MOVES!=[]:
         old_board=board
         if PLAYER==1:
+            print_board(board,POSSIBLE_MOVES)
             print("Possible moves:", POSSIBLE_MOVES)
             print("Player",PLAYER if PLAYER==1 else 2,"turn")
             POS = 99
@@ -70,8 +72,8 @@ while True:
             board=is_geting_flipped(int(POS)-11,board,PLAYER)
         if PLAYER ==-1:
             POS=get_best_move(old_board) 
-            print(POS)
-            print()
+            #print(POS)
+            #print()
             #print_board(board,POSSIBLE_MOVES)   
             board=is_geting_flipped(int(POS)-11,board,PLAYER)
     PLAYER = -PLAYER
