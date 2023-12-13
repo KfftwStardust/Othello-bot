@@ -92,11 +92,11 @@ def is_geting_flipped(pos,iboard,pplayer):
                 temp=[]
                 break
             r=new_board[y][x]
-            #print("temp",temp,"output",output,"x",x,"y",y,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
-        #if board[y][x] == pplayer:
-                #output.extend(temp)
-                ##print(temp)
-               # temp=[]  
+            """print("temp",temp,"output",output,"x",x,"y",y,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
+        if board[y][x] == pplayer:
+                output.extend(temp)
+                print(temp)
+                temp=[]"""  
     for pos in output:
         new_board=change_board(pos,new_board,pplayer)
     return new_board
