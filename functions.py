@@ -1,4 +1,5 @@
 import math
+import timeit
 def change_board(pos,jboard,kplayer):
     
     temp = jboard[pos%10]
@@ -161,13 +162,8 @@ def minimax(position, depth, alpha, beta, Player):
                 break
         return minEval
 
-def get_best_move(boar):
-    Possble_moves=get_possible_moves(boar,-1)
-    te=[]
-    for each in Possble_moves:
-        oar=boar
-        te.append(minimax(is_geting_flipped((int(each)-11),oar,-1),6,-10**9,10**9,-1))
-    m=max(te)
-    y=te.index(m)
-    best_move=Possble_moves[y]
+def get_best_move(board):
+    possible_moves = get_possible_moves(board, -1)
+    scores = [minimax(is_geting_flipped(int(move) - 11, board, -1), 6, -float('inf'), float('inf'), -1) for move in possible_moves]
+    best_move = max(possible_moves, key=lambda move: scores[possible_moves.index(move)])
     return best_move
