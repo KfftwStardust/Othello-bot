@@ -33,7 +33,7 @@ def who_wins(board):
 
 
 #minimax(board,depth,-10^999999,10^999999,PLAYER)
-
+gameString = ''
 board=new_game()
 PLAYER=1
 
@@ -50,7 +50,7 @@ while True:
         
         board=new_game()
         PLAYER=1
-        
+        gameString = ''
         
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
     
@@ -71,13 +71,21 @@ while True:
                     POS = 99
             board=is_geting_flipped(int(POS)-11,board,PLAYER)
         if PLAYER ==-1:
+            print_board(board,POSSIBLE_MOVES)
             start_time = timeit.default_timer()
             POS = get_best_move(old_board)
             end_time = timeit.default_timer()
             print(f"Time taken for get_best_move: {end_time - start_time} seconds")
-            #print(POS)
-            #print()
-            #print_board(board,POSSIBLE_MOVES)   
             board=is_geting_flipped(int(POS)-11,board,PLAYER)
     PLAYER = -PLAYER
-     
+    if gameString == '':
+        Fpos = POS
+    elif Fpos == 43:
+        POS = int((POS%10)*10 + (POS-POS%10)/10)
+    elif Fpos ==56:
+        POS = int(9-POS%10 + 90-(POS-POS%10))
+    elif Fpos == 65:
+        POS = int(9-POS%10 + 90-(POS-POS%10))
+        POS = int((POS%10)*10 + (POS-POS%10)/10)
+    gameString += str(POS)
+    print(gameString) 

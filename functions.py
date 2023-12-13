@@ -102,8 +102,6 @@ def is_geting_flipped(pos,iboard,pplayer):
         new_board=change_board(pos,new_board,pplayer)
     return new_board
 
-
-
 def evaluate_board(lboard, Player):
 
     score = 0
@@ -135,8 +133,6 @@ def evaluate_board(lboard, Player):
     return score 
 # Den är nog skit Chatgpt skrev den
 
-
-
 def minimax(position, depth, alpha, beta, Player):
     Posible_moves=get_possible_moves(position,Player)
     if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
@@ -167,6 +163,7 @@ def minimax(position, depth, alpha, beta, Player):
         return minEval
 
 def get_best_move(board):
+
     possible_moves = get_possible_moves(board, -1)
     scores = [minimax(is_geting_flipped(int(move) - 11, board, -1), 6, -float('inf'), float('inf'), -1) for move in possible_moves]
     best_move = max(possible_moves, key=lambda move: scores[possible_moves.index(move)])
