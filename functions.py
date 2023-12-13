@@ -121,6 +121,10 @@ def evaluate_board(lboard, Player):
     ]
 
     # Calculate the score based on the player's pieces and the weights
+    """ Olika strategier, minsta antalet disks i early game, få motståndaren att ha få drag.
+        mobilty: titta på hemsidan 'https://www.samsoft.org.uk/reversi/strategy.html', stable disks, frontiers,
+        parity
+        """
     for i in range(8):
         for j in range(8):
             if lboard[i][j] == 1:
