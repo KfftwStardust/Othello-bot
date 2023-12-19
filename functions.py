@@ -134,13 +134,38 @@ def evaluate_board(lboard, Player):
     score = score*Player 
     return score 
 # Den är nog skit Chatgpt skrev den
+def evaluate_othello(board, player):
+    def piece_count_eval(board, player):
+        player_pieces = sum(row.count(player) for row in board)
+        opponent_pieces = sum(row.count(3 - player) for row in board)
+        return player_pieces - opponent_pieces
 
+    def mobility_eval(board, player):
+        player_legal_moves = len(get_possible_moves(board, player))
+        opponent_legal_moves = len(get_possible_moves(board, 3 - player))
+        return player_legal_moves - opponent_legal_moves
+    
+    # Determine the game stage based on the number of pieces or empty spaces
+    total_pieces = sum(row.count(1) + row.count(2) for row in board)
+    empty_spaces = sum(row.count(0) for row in board)
+
+    if total_pieces >= 55:
+        # Late game strategy
+        score = piece_count_eval(board, player)
+    elif total_pieces >= 30:
+        # Mid game strategy
+        score = piece_count_eval(board, player) + mobility_eval(board, player)
+    else:
+        # Early game strategy
+        score = piece_count_eval(board, player) + 2 * mobility_eval(board, player)
+
+    return score
 
 
 def minimax(position, depth, alpha, beta, Player):
     Posible_moves=get_possible_moves(position,Player)
     if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
-        return evaluate_board(position,Player) 
+        return evaluate_othello(position,Player) 
     
     temp=[]
     for move in Posible_moves:
