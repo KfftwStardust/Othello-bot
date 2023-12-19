@@ -122,7 +122,7 @@ def evaluate_board(lboard, Player):
 
     # Calculate the score based on the player's pieces and the weights
     """ Olika strategier, minsta antalet disks i early game, få motståndaren att ha få drag.
-        mobilty: titta på hemsidan 'https://www.samsoft.org.uk/reversi/strategy.html', stable disks, frontiers,
+        mobilty: titta på hemsidan 'https://www.samsoft.org.uk/reversi/strategy.htm', stable disks, frontiers,
         parity
         """
     for i in range(8):
@@ -146,7 +146,7 @@ def evaluate_othello(board, player):
         return player_legal_moves - opponent_legal_moves
     
     # Determine the game stage based on the number of pieces or empty spaces
-    total_pieces = sum(row.count(1) + row.count(2) for row in board)
+    total_pieces = sum(row.count(1) + row.count(-1) for row in board)
     empty_spaces = sum(row.count(0) for row in board)
 
     if total_pieces >= 55:
@@ -154,10 +154,10 @@ def evaluate_othello(board, player):
         score = piece_count_eval(board, player)
     elif total_pieces >= 30:
         # Mid game strategy
-        score = piece_count_eval(board, player) + mobility_eval(board, player)
+        score = piece_count_eval(board, player) + mobility_eval(board, player) #+ evaluate_board(board,player)
     else:
         # Early game strategy
-        score = piece_count_eval(board, player) + 2 * mobility_eval(board, player)
+        score = piece_count_eval(board, player) + 2 * mobility_eval(board, player) #+ evaluate_board(board,player)
 
     return score
 
