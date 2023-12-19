@@ -137,12 +137,12 @@ def evaluate_board(lboard, Player):
 def evaluate_othello(board, player):
     def piece_count_eval(board, player):
         player_pieces = sum(row.count(player) for row in board)
-        opponent_pieces = sum(row.count(3 - player) for row in board)
+        opponent_pieces = sum(row.count(-player) for row in board)
         return player_pieces - opponent_pieces
 
     def mobility_eval(board, player):
         player_legal_moves = len(get_possible_moves(board, player))
-        opponent_legal_moves = len(get_possible_moves(board, 3 - player))
+        opponent_legal_moves = len(get_possible_moves(board, -player))
         return player_legal_moves - opponent_legal_moves
     
     # Determine the game stage based on the number of pieces or empty spaces
