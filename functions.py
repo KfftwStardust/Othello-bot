@@ -122,7 +122,7 @@ def evaluate_board(lboard, Player):
 
     # Calculate the score based on the player's pieces and the weights
     """ Olika strategier, minsta antalet disks i early game, få motståndaren att ha få drag.
-        mobilty: titta på hemsidan 'https://www.samsoft.org.uk/reversi/strategy.html', stable disks, frontiers,
+        mobilty: titta på hemsidan 'https://www.samsoft.org.uk/reversi/strategy.htm', stable disks, frontiers,
         parity
         """
     for i in range(8):
@@ -134,22 +134,47 @@ def evaluate_board(lboard, Player):
     score = score*Player 
     return score 
 # Den är nog skit Chatgpt skrev den
+def evaluate_othello(board, player):
+    def piece_count_eval(board, player):
+        player_pieces = sum(row.count(player) for row in board)
+        opponent_pieces = sum(row.count(-player) for row in board)
+        return player_pieces - opponent_pieces
 
+    def mobility_eval(board, player):
+        player_legal_moves = len(get_possible_moves(board, player))
+        opponent_legal_moves = len(get_possible_moves(board, -player))
+        return player_legal_moves - opponent_legal_moves
+    
+    # Determine the game stage based on the number of pieces or empty spaces
+    total_pieces = sum(row.count(1) + row.count(-1) for row in board)
+    empty_spaces = sum(row.count(0) for row in board)
+
+    if total_pieces >= 55:
+        # Late game strategy
+        score = piece_count_eval(board, player)
+    elif total_pieces >= 30:
+        # Mid game strategy
+        score = piece_count_eval(board, player) + mobility_eval(board, player) #+ evaluate_board(board,player)
+    else:
+        # Early game strategy
+        score = piece_count_eval(board, player) + 2 * mobility_eval(board, player) #+ evaluate_board(board,player)
+
+    return score
 
 
 def minimax(position, depth, alpha, beta, Player):
     Posible_moves=get_possible_moves(position,Player)
     if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
-        return evaluate_board(position,Player) 
+        return evaluate_othello(position,Player) 
     
     temp=[]
     for move in Posible_moves:
         temp.append(is_geting_flipped(move-11,position,Player))
     position=temp
     if Player==-1:
-        maxEval = -10**9
+        maxEval = -10**11
         for each in position:
-            eval = minimax(each, depth - 1, alpha, beta, 1)
+            eval = minimax(each, depth - 1, alpha, beta, 1)*100+Posible_moves[temp.index(each)]
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
@@ -157,9 +182,9 @@ def minimax(position, depth, alpha, beta, Player):
         return maxEval	
     
     else:
-        minEval = 10**9
+        minEval = 10**11
         for each in position:
-            eval = minimax(each, depth - 1, alpha, beta, -1)
+            eval = minimax(each, depth - 1, alpha, beta, -1)*100-Posible_moves[temp.index(each)]
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
@@ -167,7 +192,5 @@ def minimax(position, depth, alpha, beta, Player):
         return minEval
 
 def get_best_move(board):
-    possible_moves = get_possible_moves(board, -1)
-    scores = [minimax(is_geting_flipped(int(move) - 11, board, -1), 6, -float('inf'), float('inf'), -1) for move in possible_moves]
-    best_move = max(possible_moves, key=lambda move: scores[possible_moves.index(move)])
+    best_move=minimax(board,7, -float('inf'), float('inf'), -1)%100
     return best_move
