@@ -19,12 +19,11 @@ def get_possible_moves(sboard, lplayer):
     return POSSIBLE_MOVES
 
 def print_board(board, POSSIBLE_MOVES):
-    OSSIBLE_MOVES=POSSIBLE_MOVES
     print("   1  2  3  4  5  6  7  8")
     for i in range(8):
         print(i + 1, end=" ")
         for j in range(8):
-            if any(int(10*int(j)+int(i)+11) == p for p in OSSIBLE_MOVES):
+            if any(int(10*int(j)+int(i)+11) == p for p in POSSIBLE_MOVES):
                 print('🟢', end=' ') #🟢🔵
             else:                          
                 print('⚪' if board[i][j] == -1 else '⚫' if board[i][j] == 1 else '🟩', end=' ')
@@ -65,23 +64,23 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
     return False
 
 def is_geting_flipped(pos,iboard,pplayer):
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, -1), (-1, 1), (1, -1)]
+    directions = [(0, 1,7-pos%10), (1, 0,7-math.floor(pos/10)), (0, -1,pos%10), (-1, 0,math.floor(pos/10)), (1, 1,7-max(math.floor(pos/10),pos%10)), (-1, -1,min(math.floor(pos/10),pos%10)), (-1, 1,min(math.floor(pos/10),7-pos%10)), (1, -1,min(7-math.floor(pos/10),pos%10))]
     output=[pos]
     opp = -pplayer 
     new_board = [row[:] for row in iboard]
     for direction in directions:
-        i, j = direction
+        i, j,t = direction
         y=pos%10
         x=math.floor(pos/10)
         temp=[]
         allow=0
         r=0
-        for b in range(8):
+        for b in range(t):
             #print("temp",temp,"output",output,"x",x,"y",y,"board",r,"b",b,"direction",direction,"pos",pos,"bef")
             y += j
             x += i
-            if max(x,y)>7 or min(x,y)<0:
-                break
+            #if max(x,y)>7 or min(x,y)<0:
+            #   break
             if new_board[y][x] == opp:
                 temp.append(10*x+y)
             if new_board[y][x]==0 and allow==0:

@@ -52,7 +52,7 @@ while True:
         PLAYER=1
         
         
-    POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
+    
     
     if POSSIBLE_MOVES!=[]:
         old_board=board
