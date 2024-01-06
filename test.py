@@ -1,4 +1,4 @@
-import timeit
+"""import timeit
 a=10
 c=100
 start_time = timeit.default_timer()
@@ -32,4 +32,10 @@ for b in range(100):
     sum += b
 end_time = timeit.default_timer()
 print(f"Time taken for get_best_move: {end_time - start_time} seconds")
-print(sum)
+print(sum)"""
+"""j = (1,2,3,4,5,6,7,8)
+for a in range(2,6):
+    print(a)
+print("done")
+print(j+11)"""
+print(-1%10)

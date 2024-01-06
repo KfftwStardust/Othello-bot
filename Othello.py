@@ -41,9 +41,9 @@ PLAYER=1
 
 while True:
     POS=0
-    POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
+    POSSIBLE_MOVES = get_possible_moves(board, PLAYER,False)
     #print_board(board,POSSIBLE_MOVES)
-    if get_possible_moves(board,-PLAYER)==[] and POSSIBLE_MOVES==[]:
+    if get_possible_moves(board,-PLAYER,False)==[] and POSSIBLE_MOVES==[]:
         print_board(board,POSSIBLE_MOVES)
         print(who_wins(board))
         input("Press Enter for a new game")
@@ -56,8 +56,9 @@ while True:
     
     if POSSIBLE_MOVES!=[]:
         old_board=board
+        print_board(board,POSSIBLE_MOVES)
         if PLAYER==1:
-            print_board(board,POSSIBLE_MOVES)
+            
             print("Possible moves:", POSSIBLE_MOVES)
             print("Player",PLAYER if PLAYER==1 else 2,"turn")
             POS = 99
@@ -75,9 +76,6 @@ while True:
             POS = get_best_move(old_board)
             end_time = timeit.default_timer()
             print(f"Time taken for get_best_move: {end_time - start_time} seconds")
-            #print(POS)
-            #print()
-            #print_board(board,POSSIBLE_MOVES)   
-            board=is_geting_flipped(int(POS)-11,board,PLAYER)
+            board=is_geting_flipped(int(POS),board,PLAYER)
     PLAYER = -PLAYER
      

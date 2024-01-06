@@ -7,7 +7,7 @@ def change_board(pos,jboard,kplayer):
     jboard[pos%10] = temp
     return jboard
 
-def get_possible_moves(sboard, lplayer):
+def get_possible_moves(sboard, lplayer,inMinimax):
     POSSIBLE_MOVES = []
 
     for i in range(8):
@@ -16,6 +16,14 @@ def get_possible_moves(sboard, lplayer):
                 if is_valid_move(sboard, i, j, lplayer):
                     POSSIBLE_MOVES.append(j*10+i+11)
     POSSIBLE_MOVES.sort()
+    """if inMinimax:
+        temp = []
+        for each in POSSIBLE_MOVES:
+            temp.append(minimax(is_geting_flipped(each-11,sboard,lplayer),1, -float('inf'), float('inf'), -1,False))
+        temp.sort()
+        POSSIBLE_MOVES=[]
+        for value in temp:
+            POSSIBLE_MOVES.append[int(value%100)]"""
     return POSSIBLE_MOVES
 
 def print_board(board, POSSIBLE_MOVES):
@@ -64,14 +72,21 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
     return False
 
 def is_geting_flipped(pos,iboard,pplayer):
-    directions = [(0, 1,7-pos%10), (1, 0,7-math.floor(pos/10)), (0, -1,pos%10), (-1, 0,math.floor(pos/10)), (1, 1,7-max(math.floor(pos/10),pos%10)), (-1, -1,min(math.floor(pos/10),pos%10)), (-1, 1,min(math.floor(pos/10),7-pos%10)), (1, -1,min(7-math.floor(pos/10),pos%10))]
+    y=pos%10
+    x=math.floor(pos/10)
+    directions = [(0, 1,7-y,x,y), 
+                  (1, 0,7-x,x,y), 
+                  (0, -1,y,x,y), 
+                  (-1, 0,x,x,y), 
+                  (1, 1,min(7-x,7-y),x,y), 
+                  (-1, -1,min(x,y),x,y), 
+                  (-1, 1,min(x,7-y),x,y), 
+                  (1, -1,min(7-x,y),x,y)]
     output=[pos]
     opp = -pplayer 
     new_board = [row[:] for row in iboard]
     for direction in directions:
-        i, j,t = direction
-        y=pos%10
-        x=math.floor(pos/10)
+        i, j,t,x,y = direction
         temp=[]
         allow=0
         r=0
@@ -140,8 +155,8 @@ def evaluate_othello(board, player):
         return player_pieces - opponent_pieces
 
     def mobility_eval(board, player):
-        player_legal_moves = len(get_possible_moves(board, player))
-        opponent_legal_moves = len(get_possible_moves(board, -player))
+        player_legal_moves = len(get_possible_moves(board, player,False))
+        opponent_legal_moves = len(get_possible_moves(board, -player,False))
         return player_legal_moves - opponent_legal_moves
     
     # Determine the game stage based on the number of pieces or empty spaces
@@ -161,19 +176,16 @@ def evaluate_othello(board, player):
     return score
 
 
-def minimax(position, depth, alpha, beta, Player):
-    Posible_moves=get_possible_moves(position,Player)
-    if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
+def minimax(position, depth, alpha, beta, Player,inMinimax):
+    Posible_moves=get_possible_moves(position,Player,inMinimax)
+    if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player,False)==[]):
         return evaluate_othello(position,Player) 
     
-    temp=[]
-    for move in Posible_moves:
-        temp.append(is_geting_flipped(move-11,position,Player))
-    position=temp
+    
     if Player==-1:
         maxEval = -10**11
-        for each in position:
-            eval = minimax(each, depth - 1, alpha, beta, 1)*100+Posible_moves[temp.index(each)]
+        for each in Posible_moves:
+            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, 1, inMinimax)*100+each-11
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
@@ -182,8 +194,8 @@ def minimax(position, depth, alpha, beta, Player):
     
     else:
         minEval = 10**11
-        for each in position:
-            eval = minimax(each, depth - 1, alpha, beta, -1)*100-Posible_moves[temp.index(each)]
+        for each in Posible_moves:
+            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -1, inMinimax)*100-each-11
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
@@ -191,5 +203,5 @@ def minimax(position, depth, alpha, beta, Player):
         return minEval
 
 def get_best_move(board):
-    best_move=minimax(board,7, -float('inf'), float('inf'), -1)%100
+    best_move=minimax(board,7, -float('inf'), float('inf'), -1,True)%100
     return best_move
