@@ -86,7 +86,7 @@ def is_geting_flipped(pos,iboard,pplayer):
     opp = -pplayer 
     new_board = [row[:] for row in iboard]
     for direction in directions:
-        i, j,t,x,y = direction
+        i, j, t, x, y = direction
         temp=[]
         allow=0
         r=0
@@ -185,7 +185,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax):
     if Player==-1:
         maxEval = -10**11
         for each in Posible_moves:
-            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, 1, inMinimax)*100+each-11
+            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax)*100+each-11
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
@@ -195,13 +195,13 @@ def minimax(position, depth, alpha, beta, Player,inMinimax):
     else:
         minEval = 10**11
         for each in Posible_moves:
-            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -1, inMinimax)*100-each-11
+            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax)*100+each-11
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
                 break
         return minEval
 
-def get_best_move(board):
-    best_move=minimax(board,7, -float('inf'), float('inf'), -1,True)%100
+def get_best_move(board,Player,depth):
+    best_move=minimax(board, depth, -float('inf'), float('inf'), Player, True)%100
     return best_move
