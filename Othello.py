@@ -73,7 +73,7 @@ while True:
             board=is_geting_flipped(int(POS)-11,board,PLAYER)
         if PLAYER ==-1:
             start_time = timeit.default_timer()
-            POS = get_best_move(old_board,PLAYER,7)
+            POS = get_best_move(old_board,PLAYER,8)
             end_time = timeit.default_timer()
             print(f"Time taken for get_best_move: {end_time - start_time} seconds")
             board=is_geting_flipped(int(POS),board,PLAYER)

@@ -161,7 +161,7 @@ def evaluate_othello(board, player):
     
     # Determine the game stage based on the number of pieces or empty spaces
     total_pieces = sum(row.count(1) + row.count(-1) for row in board)
-    empty_spaces = sum(row.count(0) for row in board)
+    
 
     if total_pieces >= 55:
         # Late game strategy
@@ -183,7 +183,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax):
     
     
     if Player==-1:
-        maxEval = -10**11
+        maxEval = -10**100
         for each in Posible_moves:
             eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax)*100+each-11
             maxEval = max(maxEval, eval)
@@ -193,7 +193,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax):
         return maxEval	
     
     else:
-        minEval = 10**11
+        minEval = 10**100
         for each in Posible_moves:
             eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax)*100+each-11
             minEval = min(minEval, eval)
@@ -204,4 +204,5 @@ def minimax(position, depth, alpha, beta, Player,inMinimax):
 
 def get_best_move(board,Player,depth):
     best_move=minimax(board, depth, -float('inf'), float('inf'), Player, True)%100
+    print(best_move)
     return best_move
