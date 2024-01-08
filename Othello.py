@@ -56,14 +56,14 @@ while True:
     
     if POSSIBLE_MOVES!=[]:
         old_board=board
-        print_board(board,POSSIBLE_MOVES)
+        
         if PLAYER==1:
-            
-            print("Possible moves:", POSSIBLE_MOVES)
+            print_board(board,POSSIBLE_MOVES)
             print("Player",PLAYER if PLAYER==1 else 2,"turn")
+            print("Possible moves:", POSSIBLE_MOVES)
             POS = 99
             while POS==99:
-                POS=str(input("Vilken pos 11 till 88 ")) or ' '
+                POS=str(input("Choose of the the positions from the list ")) or ' '
                 #if len(POS)==2:
                     #POS=str(ord(POS[0:1])-96)+str(POS[1:2])
                 if not POS.isdigit():
@@ -72,8 +72,9 @@ while True:
                     POS = 99
             board=is_geting_flipped(int(POS)-11,board,PLAYER)
         if PLAYER ==-1:
+            print_board(board,[])
             start_time = timeit.default_timer()
-            POS = get_best_move(old_board,PLAYER,8)
+            POS = get_best_move(old_board,PLAYER,9)
             end_time = timeit.default_timer()
             print(f"Time taken for get_best_move: {end_time - start_time} seconds")
             board=is_geting_flipped(int(POS),board,PLAYER)
