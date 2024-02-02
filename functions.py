@@ -74,6 +74,7 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
     return False
 
 def is_geting_flipped(pos,iboard,pplayer):
+    pos -=11
     if pos < 0:
         return iboard
     y=pos%10
@@ -117,8 +118,6 @@ def is_geting_flipped(pos,iboard,pplayer):
     for pos in output:
         new_board=change_board(pos,new_board,pplayer)
     return new_board
-
-
 
 def evaluate_board(lboard, Player):
 
@@ -177,7 +176,6 @@ def evaluate_othello(board, player, constants):
 
     return score
 
-
 def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
     Posible_moves=get_possible_moves(position,Player,inMinimax)
     if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player,False)==[]):
@@ -187,7 +185,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
     if Player==-1:
         maxEval = -10**100
         for each in Posible_moves:
-            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each-11
+            eval = minimax(is_geting_flipped(each,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
@@ -197,7 +195,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
     else:
         minEval = 10**100
         for each in Posible_moves:
-            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each-11
+            eval = minimax(is_geting_flipped(each,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
@@ -205,6 +203,41 @@ def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
         return minEval
 
 def get_best_move(board,Player,depth,constants):
+
     best_move=minimax(board, depth, -float('inf'), float('inf'), Player, True, constants)%100
     print(best_move+11)
     return best_move
+
+def new_game():
+    board=[]
+    for q in range(8):
+        x=[]
+        for o in range(8):
+            x.append(int(0))
+        board.append(x)
+    change_board(33,board,-1)
+    change_board(44,board,-1)
+    change_board(43,board,1)
+    change_board(34,board,1)
+    return board
+
+def who_wins(board):
+    p1_score=0
+    p2_score=0
+    for u in range(8):
+        for r in range(8):
+            if board[u][r]==-1:
+                p1_score +=1
+            if board[u][r]==1:
+                p2_score +=1
+    if p1_score == p2_score:
+        return "The game ended in a Draw"
+    else:
+        return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
+
+def constants_change(constants,board):
+    who_won=who_wins(board)[7:8]
+    if who_won ==1:
+        b=b
+    
+    return constants
