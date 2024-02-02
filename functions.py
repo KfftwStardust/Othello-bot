@@ -24,6 +24,8 @@ def get_possible_moves(sboard, lplayer,inMinimax):
         POSSIBLE_MOVES=[]
         for value in temp:
             POSSIBLE_MOVES.append[int(value%100)]"""
+    if POSSIBLE_MOVES==[]:
+        POSSIBLE_MOVES.append(0)
     return POSSIBLE_MOVES
 
 def print_board(board, POSSIBLE_MOVES):
@@ -72,6 +74,8 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
     return False
 
 def is_geting_flipped(pos,iboard,pplayer):
+    if pos < 0:
+        return iboard
     y=pos%10
     x=math.floor(pos/10)
     directions = [(0, 1,7-y,x,y), 
@@ -88,18 +92,16 @@ def is_geting_flipped(pos,iboard,pplayer):
     for direction in directions:
         i, j, t, x, y = direction
         temp=[]
-        allow=0
         r=0
         for b in range(t):
             #print("temp",temp,"output",output,"x",x,"y",y,"board",r,"b",b,"direction",direction,"pos",pos,"bef")
             y += j
             x += i
-            #if max(x,y)>7 or min(x,y)<0:
-            #   break
+            if max(x,y)>7 or min(x,y)<0:
+               break
             if new_board[y][x] == opp:
                 temp.append(10*x+y)
-            if new_board[y][x]==0 and allow==0:
-                allow = 1
+            if new_board[y][x] == 0:
                 temp=[]
                 break    
             if new_board[y][x] == pplayer:
@@ -148,7 +150,7 @@ def evaluate_board(lboard, Player):
     score = score*Player 
     return score 
 # Den är nog skit Chatgpt skrev den
-def evaluate_othello(board, player):
+def evaluate_othello(board, player, constants):
     def piece_count_eval(board, player):
         player_pieces = sum(row.count(player) for row in board)
         opponent_pieces = sum(row.count(-player) for row in board)
@@ -168,24 +170,24 @@ def evaluate_othello(board, player):
         score = piece_count_eval(board, player)
     elif total_pieces >= 30:
         # Mid game strategy
-        score = piece_count_eval(board, player) + mobility_eval(board, player) #+ evaluate_board(board,player)
+        score = piece_count_eval(board, player) + constants[0]*mobility_eval(board, player) #+ constants[1]*evaluate_board(board,player)
     else:
         # Early game strategy
-        score = piece_count_eval(board, player) + 2 * mobility_eval(board, player) #+ evaluate_board(board,player)
+        score = piece_count_eval(board, player) + 2*constants[2]* mobility_eval(board, player) #+ constants[3]*evaluate_board(board,player)
 
     return score
 
 
-def minimax(position, depth, alpha, beta, Player,inMinimax):
+def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
     Posible_moves=get_possible_moves(position,Player,inMinimax)
     if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player,False)==[]):
-        return evaluate_othello(position,Player) 
+        return evaluate_othello(position,Player,constants) 
     
     
     if Player==-1:
         maxEval = -10**100
         for each in Posible_moves:
-            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax)*100+each-11
+            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each-11
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
@@ -195,14 +197,14 @@ def minimax(position, depth, alpha, beta, Player,inMinimax):
     else:
         minEval = 10**100
         for each in Posible_moves:
-            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax)*100+each-11
+            eval = minimax(is_geting_flipped(each-11,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each-11
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
                 break
         return minEval
 
-def get_best_move(board,Player,depth):
-    best_move=minimax(board, depth, -float('inf'), float('inf'), Player, True)%100
-    print(best_move)
+def get_best_move(board,Player,depth,constants):
+    best_move=minimax(board, depth, -float('inf'), float('inf'), Player, True, constants)%100
+    print(best_move+11)
     return best_move

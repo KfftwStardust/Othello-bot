@@ -37,7 +37,7 @@ def who_wins(board):
 board=new_game()
 PLAYER=1
 
-
+constants=[1,1,1,1]
 
 while True:
     POS=0
@@ -56,7 +56,7 @@ while True:
     
     if POSSIBLE_MOVES!=[]:
         old_board=board
-        
+        print_board(board,POSSIBLE_MOVES)
         if PLAYER==1:
             print_board(board,POSSIBLE_MOVES)
             print("Player",PLAYER if PLAYER==1 else 2,"turn")
@@ -71,12 +71,12 @@ while True:
                 if any(int(POS) == p for p in POSSIBLE_MOVES) == False:
                     POS = 99
             board=is_geting_flipped(int(POS)-11,board,PLAYER)
-        if PLAYER ==-1:
+        if PLAYER !=1:
             print_board(board,[])
-            start_time = timeit.default_timer()
-            POS = get_best_move(old_board,PLAYER,9)
-            end_time = timeit.default_timer()
-            print(f"Time taken for get_best_move: {end_time - start_time} seconds")
+            #start_time = timeit.default_timer()
+            POS = get_best_move(old_board,PLAYER,7,constants)
+            #end_time = timeit.default_timer()
+            #print(f"Time taken for get_best_move: {end_time - start_time} seconds")
             board=is_geting_flipped(int(POS),board,PLAYER)
     PLAYER = -PLAYER
      
