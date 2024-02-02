@@ -1,5 +1,5 @@
 import math
-import timeit
+import random
 def change_board(pos,jboard,kplayer):
     
     temp = jboard[pos%10]
@@ -162,17 +162,20 @@ def evaluate_othello(board, player, constants):
     
     # Determine the game stage based on the number of pieces or empty spaces
     total_pieces = sum(row.count(1) + row.count(-1) for row in board)
-    
+    if player==1:
+        n=0
+    else:
+        n=4
 
     if total_pieces >= 55:
         # Late game strategy
         score = piece_count_eval(board, player)
     elif total_pieces >= 30:
         # Mid game strategy
-        score = piece_count_eval(board, player) + constants[0]*mobility_eval(board, player) #+ constants[1]*evaluate_board(board,player)
+        score = piece_count_eval(board, player) + constants[n]*mobility_eval(board, player) #+ constants[n+1]*evaluate_board(board,player)
     else:
         # Early game strategy
-        score = piece_count_eval(board, player) + 2*constants[2]* mobility_eval(board, player) #+ constants[3]*evaluate_board(board,player)
+        score = piece_count_eval(board, player) + 2*constants[n+2]* mobility_eval(board, player) #+ constants[n+3]*evaluate_board(board,player)
 
     return score
 
@@ -205,7 +208,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
 def get_best_move(board,Player,depth,constants):
 
     best_move=minimax(board, depth, -float('inf'), float('inf'), Player, True, constants)%100
-    print(best_move+11)
+    #print(best_move+11)
     return best_move
 
 def new_game():
@@ -236,8 +239,17 @@ def who_wins(board):
         return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
 
 def constants_change(constants,board):
+    print("""f""")
     who_won=who_wins(board)[7:8]
+    if who_won ==2:
+        multiplier = 2*random.random()-1
+        constants[4] += (2*random.random()-1)/multiplier
+        constants[5] += (2*random.random()-1)/multiplier
+        constants[6] += (2*random.random()-1)/multiplier
+        constants[7] += (2*random.random()-1)/multiplier
     if who_won ==1:
-        b=b
-    
+        constants[0]=constants[4]
+        constants[1]=constants[5]
+        constants[2]=constants[6]
+        constants[3]=constants[7]
     return constants
