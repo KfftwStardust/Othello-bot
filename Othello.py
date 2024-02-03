@@ -3,7 +3,7 @@ from functions import *
 board=new_game()
 PLAYER=1
 
-constants=[1,1,1,1,1,1,1,1]
+constants=[7.95265448247082, 3.3591377304196834, 0.12550102679935993, 6.847242107087103, 12.660532007361532, 11.464745778183207, 3.50764725402987, 13.122139178795013]
 
 while True:
     POS=0
@@ -12,7 +12,7 @@ while True:
     if get_possible_moves(board,-PLAYER,False)==[0] and POSSIBLE_MOVES==[0]:
         print_board(board,POSSIBLE_MOVES)
         print(who_wins(board))
-        input("Press Enter for a new game")
+        #input("Press Enter for a new game")
         print(constants, file=open('haha.txt', 'a'))
         constants=constants_change(constants,board)
         board=new_game()
