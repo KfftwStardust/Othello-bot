@@ -172,12 +172,12 @@ def evaluate_othello(board, player, constants):
         score = piece_count_eval(board, player)
     elif total_pieces >= 30:
         # Mid game strategy
-        score = piece_count_eval(board, player) + constants[n]*mobility_eval(board, player) #+ constants[n+1]*evaluate_board(board,player)
+        score = piece_count_eval(board, player) + constants[n]*mobility_eval(board, player) + constants[n+1]*evaluate_board(board,player)
     else:
         # Early game strategy
-        score = piece_count_eval(board, player) + 2*constants[n+2]* mobility_eval(board, player) #+ constants[n+3]*evaluate_board(board,player)
+        score = piece_count_eval(board, player) + constants[n+2]* mobility_eval(board, player) + constants[n+3]*evaluate_board(board,player)
 
-    return int(math.floor(score))
+    return int(score)
 
 def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
     Posible_moves=get_possible_moves(position,Player,inMinimax)
@@ -234,7 +234,7 @@ def who_wins(board):
             if board[u][r]==1:
                 p2_score +=1
     if p1_score == p2_score:
-        return "Player 0 "#"The game ended in a Draw"
+        return "Player 0 " #"The game ended in a Draw"
     else:
         return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
 
@@ -243,6 +243,10 @@ def constants_change(constant,board):
     who_won=int(who_wins(board)[7:8])
     
     if who_won == 2:
+        constants[4]=constants[0]
+        constants[5]=constants[1]
+        constants[6]=constants[2]
+        constants[7]=constants[3]
         multiplier = 2*random.random()-1
         constants[4] += (2*random.random()-1)/multiplier
         constants[5] += (2*random.random()-1)/multiplier

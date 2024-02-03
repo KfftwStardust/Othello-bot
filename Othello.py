@@ -13,7 +13,7 @@ while True:
         print_board(board,POSSIBLE_MOVES)
         print(who_wins(board))
         #input("Press Enter for a new game")
-        print(constants, file=open('haha.txt', 'a'))
+        print(constants, file=open('eval_values.txt', 'a'))
         constants=constants_change(constants,board)
         board=new_game()
         PLAYER=1
