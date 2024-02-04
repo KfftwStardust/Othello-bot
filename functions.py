@@ -19,7 +19,7 @@ def get_possible_moves(sboard, lplayer,inMinimax):
     """if inMinimax:
         temp = []
         for each in POSSIBLE_MOVES:
-            temp.append(minimax(is_geting_flipped(each-11,sboard,lplayer),1, -float('inf'), float('inf'), -1,False))
+            temp.append(minimax(is_getting_flipped(each-11,sboard,lplayer),1, -float('inf'), float('inf'), -1,False))
         temp.sort()
         POSSIBLE_MOVES=[]
         for value in temp:
@@ -28,13 +28,16 @@ def get_possible_moves(sboard, lplayer,inMinimax):
         POSSIBLE_MOVES.append(0)
     return POSSIBLE_MOVES
 
-def print_board(board, POSSIBLE_MOVES):
+def print_board(board, POSSIBLE_MOVES,last_computer_move):
     print("   1  2  3  4  5  6  7  8")
     for i in range(8):
         print(i + 1, end=" ")
         for j in range(8):
-            if any(int(10*int(j)+int(i)+11) == p for p in POSSIBLE_MOVES):
+            position = int(10*int(j)+int(i)+11)
+            if any(position == p for p in POSSIBLE_MOVES):
                 print('🟢', end=' ') #🟢🔵
+            elif position == last_computer_move:
+                print('⬜', end=' ')
             else:                          
                 print('⚪' if board[i][j] == -1 else '⚫' if board[i][j] == 1 else '🟩', end=' ')
         print()
@@ -73,7 +76,7 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
 
     return False
 
-def is_geting_flipped(pos,iboard,pplayer):
+def is_getting_flipped(pos,iboard,pplayer):
     pos -=11
     if pos < 0:
         return iboard
@@ -188,7 +191,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
     if Player==-1:
         maxEval = -10**100
         for each in Posible_moves:
-            eval = minimax(is_geting_flipped(each,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each
+            eval = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
@@ -198,7 +201,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
     else:
         minEval = 10**100
         for each in Posible_moves:
-            eval = minimax(is_geting_flipped(each,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each
+            eval = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
