@@ -10,7 +10,7 @@ while True:
     POSSIBLE_MOVES = get_possible_moves(board, PLAYER,False)
     #print_board(board,POSSIBLE_MOVES)
     if get_possible_moves(board,-PLAYER,False)==[0] and POSSIBLE_MOVES==[0]:
-        print_board(board,POSSIBLE_MOVES)
+        print_board(board,POSSIBLE_MOVES,last_computer_move)
         print(who_wins(board))
         #input("Press Enter for a new game")
         print(constants, file=open('eval_values.txt', 'a'))
