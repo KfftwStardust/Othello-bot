@@ -1,34 +1,25 @@
 import math
 import random
 def change_board(pos,jboard,kplayer):
-    
-    temp = jboard[pos%10]
-    temp[math.floor(pos/10)]= kplayer
-    jboard[pos%10] = temp
+    # changes one position to the current players colour
+    jboard[pos%10][math.floor(pos/10)]=kplayer
     return jboard
 
-def get_possible_moves(sboard, lplayer,inMinimax):
+def get_possible_moves(sboard, lplayer):
+    # Finds all possible moves by iterating through all board positions
     POSSIBLE_MOVES = []
-
     for i in range(8):
         for j in range(8):
             if sboard[i][j] == 0:
                 if is_valid_move(sboard, i, j, lplayer):
                     POSSIBLE_MOVES.append(j*10+i+11)
     POSSIBLE_MOVES.sort()
-    """if inMinimax:
-        temp = []
-        for each in POSSIBLE_MOVES:
-            temp.append(minimax(is_getting_flipped(each-11,sboard,lplayer),1, -float('inf'), float('inf'), -1,False))
-        temp.sort()
-        POSSIBLE_MOVES=[]
-        for value in temp:
-            POSSIBLE_MOVES.append[int(value%100)]"""
     if POSSIBLE_MOVES==[]:
         POSSIBLE_MOVES.append(0)
     return POSSIBLE_MOVES
 
 def print_board(board, POSSIBLE_MOVES,last_computer_move):
+    # prints the current board with your current possible moves and the last computer move played
     print("   1  2  3  4  5  6  7  8")
     for i in range(8):
         print(i + 1, end=" ")
@@ -77,11 +68,20 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
     return False
 
 def is_getting_flipped(pos,iboard,pplayer):
+    # Decides which pieces are getting flipped when a piece is played
     pos -=11
+    
     if pos < 0:
+        # Workaround for a pecial case in the minimax algoritm
         return iboard
+    # Decide the starting positions in the array
     y=pos%10
     x=math.floor(pos/10)
+    # Decide which direction from the starting piece the function searches for new peices
+    # Directions consists of three parts. 
+    # The first part is the first two numbers, they decide the direction like a vector
+    # The second part is the third value which decides how many times it's supposed to iterate through the 2d array, this is unique for each direction
+    # the thrisd part is the last two numbers which is the starting posistion for the operation
     directions = [(0, 1,7-y,x,y), 
                   (1, 0,7-x,x,y), 
                   (0, -1,y,x,y), 
@@ -94,31 +94,29 @@ def is_getting_flipped(pos,iboard,pplayer):
     opp = -pplayer 
     new_board = [row[:] for row in iboard]
     for direction in directions:
-        i, j, t, x, y = direction
+        dx, dy, iteration_amount, x, y = direction
         temp=[]
-        r=0
-        for b in range(t):
-            #print("temp",temp,"output",output,"x",x,"y",y,"board",r,"b",b,"direction",direction,"pos",pos,"bef")
-            y += j
-            x += i
+        
+        for b in range(iteration_amount):
+            y += dy
+            x += dx
             if max(x,y)>7 or min(x,y)<0:
-               break
+                # stops it from itarion outside of the board, and generating error messages
+                break
             if new_board[y][x] == opp:
+                # change the opponents tile to yours if it gets itareted over
                 temp.append(10*x+y)
             if new_board[y][x] == 0:
+                # if it finds an empty tile, wipe the array and restart in anpther direction 
                 temp=[]
                 break    
             if new_board[y][x] == pplayer:
+                # if it finds your own colour tile, move the result to the output array and restart with another direction
                 output.extend(temp)
                 temp=[]
                 break
-            r=new_board[y][x]
-            """print("temp",temp,"output",output,"x",x,"y",y,"board",r,"b",b,"direction",direction,"pos",pos,"aft")
-        if board[y][x] == pplayer:
-                output.extend(temp)
-                print(temp)
-                temp=[]"""  
     for pos in output:
+        # change all the positions that were the opponents and the position that was played
         new_board=change_board(pos,new_board,pplayer)
     return new_board
 
@@ -138,11 +136,12 @@ def evaluate_board(lboard, Player):
         [100, -20, 10, 5, 5, 10, -20, 100],
     ]
 
-    # Calculate the score based on the player's pieces and the weights
+    
     """ Olika strategier, minsta antalet disks i early game, få motståndaren att ha få drag.
         mobilty: titta på hemsidan 'https://www.samsoft.org.uk/reversi/strategy.htm', stable disks, frontiers,
         parity
         """
+    # Calculate the score based on the player's pieces and the weights
     for i in range(8):
         for j in range(8):
             if lboard[i][j] == 1:
@@ -152,17 +151,9 @@ def evaluate_board(lboard, Player):
     score = score*Player 
     return score 
 # Den är nog skit Chatgpt skrev den
-def piece_count_eval(board, player):
-    player_pieces = sum(row.count(player) for row in board)
-    opponent_pieces = sum(row.count(-player) for row in board)
-    return player_pieces - opponent_pieces
 
-def mobility_eval(board, player):
-    player_legal_moves = len(get_possible_moves(board, player,False))
-    opponent_legal_moves = len(get_possible_moves(board, -player,False))
-    return player_legal_moves - opponent_legal_moves
 def evaluate_othello(board, player, constants):
-    
+    # The main eval funtion that adds up the eval from the children functions below.
     
     # Determine the game stage based on the number of pieces or empty spaces
     total_pieces = sum(row.count(1) + row.count(-1) for row in board)
@@ -182,17 +173,28 @@ def evaluate_othello(board, player, constants):
         score = piece_count_eval(board, player) + constants[n+2]* mobility_eval(board, player) + constants[n+3]*evaluate_board(board,player)
 
     return int(score)
+def piece_count_eval(board, player):
+    # evaluates according to piece count
+    player_pieces = sum(row.count(player) for row in board)
+    opponent_pieces = sum(row.count(-player) for row in board)
+    return player_pieces - opponent_pieces
 
-def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
-    Posible_moves=get_possible_moves(position,Player,inMinimax)
-    if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player,False)==[]):
-        return evaluate_othello(position,Player,constants) 
+def mobility_eval(board, player):
+    # evalutaes according ot mobilty. aka how many possible moves are available
+    player_legal_moves = len(get_possible_moves(board, player,False))
+    opponent_legal_moves = len(get_possible_moves(board, -player,False))
+    return player_legal_moves - opponent_legal_moves
+
+def minimax(position, depth, alpha, beta, Player,constants):
     
+    Posible_moves=get_possible_moves(position,Player)
+    if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
+        return evaluate_othello(position,Player,constants) 
     
     if Player==-1:
         maxEval = -10**100
         for each in Posible_moves:
-            eval = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each
+            eval = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)*100+each
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
@@ -202,7 +204,7 @@ def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
     else:
         minEval = 10**100
         for each in Posible_moves:
-            eval = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player, inMinimax,constants)*100+each
+            eval = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)*100+each
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
@@ -210,12 +212,13 @@ def minimax(position, depth, alpha, beta, Player,inMinimax,constants):
         return minEval
 
 def get_best_move(board,Player,depth,constants):
-
+    #Finds the best move according to the current version of the minimax algoritm. It's a separate function because we had a plan to add an opening book aswell.
     best_move=minimax(board, depth, -float('inf'), float('inf'), Player, True, constants)%100
     #print(best_move+11)
     return best_move
 
 def new_game():
+    #Creates a new board and readies it for a new game
     board=[]
     for q in range(8):
         x=[]
@@ -229,6 +232,7 @@ def new_game():
     return board
 
 def who_wins(board,player):
+    # decides who wins the game
     score=piece_count_eval(board,player)
     if score == 0:
         return "Player 0 " #"The game ended in a Draw"
@@ -236,6 +240,7 @@ def who_wins(board,player):
         return "Player 1 wins" if score > 0 else "Player 2 wins"
 
 def constants_change(constant,board):
+    # Changes the constants used in the eval function, is only used when the bot is training. It's supposed to find some good ish values for the eval funtion
     constants=constant
     who_won=int(who_wins(board)[7:8])
     
