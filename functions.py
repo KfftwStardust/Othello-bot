@@ -137,11 +137,9 @@ def evaluate_board(lboard, Player):
             [20, -3, 11, 8, 8, 11, -3, 20]
         ]
 
+    dx = [-1, -1, 0, 1, 1, 1, 0, -1]
+    dy = [0, 1, 1, 1, 0, -1, -1, -1]
     
-    """ Olika strategier, minsta antalet disks i early game, få motståndaren att ha få drag.
-        mobilty: titta på hemsidan 'https://www.samsoft.org.uk/reversi/strategy.htm', stable disks, frontiers,
-        parity
-        """
     # Calculate the score based on the player's pieces and the weights
     for i in range(8):
         for j in range(8):
@@ -149,6 +147,18 @@ def evaluate_board(lboard, Player):
                 score += weights[i][j]
             elif lboard[i][j] == -1:
                 score -= weights[i][j]
+            if lboard[i][j]==0:
+                for k in range(8):
+                        x = i + dx[k]
+                        y = j + dy[k]
+                        if (x >= 0 and x < 8 and y >= 0 and y < 8 and
+                                board[x][y] == 0):
+                            if board[i][j] == Player:
+                                my_front_tiles += 1
+                            else:
+                                opp_front_tiles += 1
+                            break
+
     score = score*Player 
     return score 
 # Den är nog skit Chatgpt skrev den
@@ -175,7 +185,7 @@ def evaluate_othello(board, player, constants):
 
     return int(score)
 def piece_count_eval(board, player):
-    # evaluates according to piece count
+    # evaluates according to piece count 
     player_pieces = sum(row.count(player) for row in board)
     opponent_pieces = sum(row.count(-player) for row in board)
     return player_pieces - opponent_pieces
@@ -185,6 +195,8 @@ def mobility_eval(board, player):
     player_legal_moves = len(get_possible_moves(board, player,False))
     opponent_legal_moves = len(get_possible_moves(board, -player,False))
     return player_legal_moves - opponent_legal_moves
+
+
 
 def minimax(position, depth, alpha, beta, Player,constants):
     
@@ -234,7 +246,7 @@ def new_game():
 
 def who_wins(board,player):
     # decides who wins the game
-    score=piece_count_eval(board,player)
+    score=sum(row.count(player) for row in board)-sum(row.count(-player) for row in board)
     if score == 0:
         return "Player 0 " #"The game ended in a Draw"
     else:
