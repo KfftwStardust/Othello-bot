@@ -152,16 +152,17 @@ def evaluate_board(lboard, Player):
     score = score*Player 
     return score 
 # Den är nog skit Chatgpt skrev den
-def evaluate_othello(board, player, constants):
-    def piece_count_eval(board, player):
-        player_pieces = sum(row.count(player) for row in board)
-        opponent_pieces = sum(row.count(-player) for row in board)
-        return player_pieces - opponent_pieces
+def piece_count_eval(board, player):
+    player_pieces = sum(row.count(player) for row in board)
+    opponent_pieces = sum(row.count(-player) for row in board)
+    return player_pieces - opponent_pieces
 
-    def mobility_eval(board, player):
-        player_legal_moves = len(get_possible_moves(board, player,False))
-        opponent_legal_moves = len(get_possible_moves(board, -player,False))
-        return player_legal_moves - opponent_legal_moves
+def mobility_eval(board, player):
+    player_legal_moves = len(get_possible_moves(board, player,False))
+    opponent_legal_moves = len(get_possible_moves(board, -player,False))
+    return player_legal_moves - opponent_legal_moves
+def evaluate_othello(board, player, constants):
+    
     
     # Determine the game stage based on the number of pieces or empty spaces
     total_pieces = sum(row.count(1) + row.count(-1) for row in board)
@@ -227,19 +228,12 @@ def new_game():
     change_board(34,board,1)
     return board
 
-def who_wins(board):
-    p1_score=0
-    p2_score=0
-    for u in range(8):
-        for r in range(8):
-            if board[u][r]==-1:
-                p1_score +=1
-            if board[u][r]==1:
-                p2_score +=1
-    if p1_score == p2_score:
+def who_wins(board,player):
+    score=piece_count_eval(board,player)
+    if score == 0:
         return "Player 0 " #"The game ended in a Draw"
     else:
-        return "Player 1 wins" if p1_score > p2_score else "Player 2 wins"
+        return "Player 1 wins" if score > 0 else "Player 2 wins"
 
 def constants_change(constant,board):
     constants=constant
