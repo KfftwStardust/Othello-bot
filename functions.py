@@ -147,18 +147,18 @@ def evaluate_board(lboard, Player):
                 score += weights[i][j]
             elif lboard[i][j] == -1:
                 score -= weights[i][j]
-            if lboard[i][j]==0:
+            """if lboard[i][j]==0:
                 for k in range(8):
                         x = i + dx[k]
                         y = j + dy[k]
                         if (x >= 0 and x < 8 and y >= 0 and y < 8 and
-                                board[x][y] == 0):
-                            if board[i][j] == Player:
+                                lboard[x][y] == 0):
+                            if lboard[i][j] == Player:
                                 my_front_tiles += 1
                             else:
                                 opp_front_tiles += 1
                             break
-
+"""
     score = score*Player 
     return score 
 # Den är nog skit Chatgpt skrev den
@@ -192,8 +192,8 @@ def piece_count_eval(board, player):
 
 def mobility_eval(board, player):
     # evalutaes according ot mobilty. aka how many possible moves are available
-    player_legal_moves = len(get_possible_moves(board, player,False))
-    opponent_legal_moves = len(get_possible_moves(board, -player,False))
+    player_legal_moves = len(get_possible_moves(board, player))
+    opponent_legal_moves = len(get_possible_moves(board, -player))
     return player_legal_moves - opponent_legal_moves
 
 
@@ -226,7 +226,7 @@ def minimax(position, depth, alpha, beta, Player,constants):
 
 def get_best_move(board,Player,depth,constants):
     #Finds the best move according to the current version of the minimax algoritm. It's a separate function because we had a plan to add an opening book aswell.
-    best_move=minimax(board, depth, -float('inf'), float('inf'), Player, True, constants)%100
+    best_move=minimax(board, depth, -float('inf'), float('inf'), Player, constants)%100
     #print(best_move+11)
     return best_move
 
