@@ -100,9 +100,9 @@ def is_getting_flipped(pos,iboard,pplayer):
         for b in range(iteration_amount):
             y += dy
             x += dx
-            if max(x,y)>7 or min(x,y)<0:
+            """if max(x,y)>7 or min(x,y)<0:
                 # stops it from itarion outside of the board, and generating error messages
-                break
+                break"""
             if new_board[y][x] == opp:
                 # change the opponents tile to yours if it gets itareted over
                 temp.append(10*x+y)
@@ -119,50 +119,6 @@ def is_getting_flipped(pos,iboard,pplayer):
         # change all the positions that were the opponents and the position that was played
         new_board=change_board(pos,new_board,pplayer)
     return new_board
-
-def evaluate_board(lboard, Player):
-
-    score = 0
-    player_front_tiles = 0
-    opponent_front_tiles = 0
-    # Define the weights for each position on the board
-    weights = [
-        
-            [20, -3, 11, 8, 8, 11, -3, 20],
-            [-3, -7, -4, 1, 1, -4, -7, -3],
-            [11, -4, 2, 2, 2, 2, -4, 11],
-            [8, 1, 2, -3, -3, 2, 1, 8],
-            [8, 1, 2, -3, -3, 2, 1, 8],
-            [11, -4, 2, 2, 2, 2, -4, 11],
-            [-3, -7, -4, 1, 1, -4, -7, -3],
-            [20, -3, 11, 8, 8, 11, -3, 20]
-        ]
-
-    dx = [-1, -1, 0, 1, 1, 1, 0, -1]
-    dy = [0, 1, 1, 1, 0, -1, -1, -1]
-    
-    # Calculate the score based on the player's pieces and the weights
-    for i in range(8):
-        for j in range(8):
-            if lboard[i][j] == 1:
-                score += weights[i][j]
-            elif lboard[i][j] == -1:
-                score -= weights[i][j]
-            if lboard[i][j]==0:
-                for k in range(8):
-                        x = i + dx[k]
-                        y = j + dy[k]
-                        if (x >= 0 and x < 8 and y >= 0 and y < 8 and
-                                lboard[x][y] == 0):
-                            if lboard[i][j] == Player:
-                                player_front_tiles += 1
-                            else:
-                                opponent_front_tiles += 1
-                            break
-            
-    score = score*Player 
-    return score 
-# Den är nog skit Chatgpt skrev den
 
 def evaluate_othello(board, player, constants):
     # The main eval funtion that adds up the eval from the children functions below.
@@ -191,9 +147,9 @@ def evaluate_othello(board, player, constants):
     # Calculate the score based on the player's pieces and the weights
     for i in range(8):
         for j in range(8):
-            if board[i][j] == 1:
+            if board[i][j] == player:
                 score += weights[i][j]
-            elif board[i][j] == -1:
+            elif board[i][j] == -player:
                 score -= weights[i][j]
             if board[i][j]==0:
                 for k in range(8):
@@ -214,8 +170,8 @@ def evaluate_othello(board, player, constants):
         fscore = 0        
      
 
-    return int((10 * piece_count_eval(board,player)) + (801.724 * corner_occupancy_eval(board,player)) + (382.026 * corner_closeniness_eval(board,player)) + \
-               (78.922 * mobility_eval(board,player)) + (74.396 * fscore) + (10 * score))
+    return (10 * piece_count_eval(board,player)) + (801.724 * corner_occupancy_eval(board,player)) + (382.026 * corner_closeniness_eval(board,player)) + \
+               (78.922 * mobility_eval(board,player)) + (74.396 * fscore) + (10 * score)
 
 def piece_count_eval(board, player):
     # evaluates according to piece count 
@@ -275,12 +231,11 @@ def minimax(position, depth, alpha, beta, Player,constants):
     
     Posible_moves=get_possible_moves(position,Player)
     if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
-        return (evaluate_othello(position,Player,constants), 1 )
+        return (evaluate_othello(position,Player,constants),1) if depth == 0 else who_wins(position)
     
     if Player==-1:
         maxEval = -10**100
         for each in Posible_moves:
-            #print(each)
             eval, _ = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
