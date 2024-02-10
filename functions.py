@@ -1,8 +1,8 @@
-import math
-import random
+from math import floor
+from random import random
 def change_board(pos,jboard,kplayer):
     # changes one position to the current players colour
-    jboard[pos%10][math.floor(pos/10)]=kplayer
+    jboard[int(pos%10)][int(floor(pos/10))]=kplayer
     return jboard
 
 def get_possible_moves(sboard, lplayer):
@@ -75,8 +75,8 @@ def is_getting_flipped(pos,iboard,pplayer):
         # Workaround for a pecial case in the minimax algoritm
         return iboard
     # Decide the starting positions in the array
-    y=pos%10
-    x=math.floor(pos/10)
+    y=int(pos%10)
+    x=int(floor(pos/10))
     # Decide which direction from the starting piece the function searches for new peices
     # Directions consists of three parts. 
     # The first part is the first two numbers, they decide the direction like a vector
@@ -123,7 +123,8 @@ def is_getting_flipped(pos,iboard,pplayer):
 def evaluate_board(lboard, Player):
 
     score = 0
-
+    player_front_tiles = 0
+    opponent_front_tiles = 0
     # Define the weights for each position on the board
     weights = [
         
@@ -147,87 +148,160 @@ def evaluate_board(lboard, Player):
                 score += weights[i][j]
             elif lboard[i][j] == -1:
                 score -= weights[i][j]
-            """if lboard[i][j]==0:
+            if lboard[i][j]==0:
                 for k in range(8):
                         x = i + dx[k]
                         y = j + dy[k]
                         if (x >= 0 and x < 8 and y >= 0 and y < 8 and
                                 lboard[x][y] == 0):
                             if lboard[i][j] == Player:
-                                my_front_tiles += 1
+                                player_front_tiles += 1
                             else:
-                                opp_front_tiles += 1
+                                opponent_front_tiles += 1
                             break
-"""
+            
     score = score*Player 
     return score 
 # Den är nog skit Chatgpt skrev den
 
 def evaluate_othello(board, player, constants):
     # The main eval funtion that adds up the eval from the children functions below.
-    
     # Determine the game stage based on the number of pieces or empty spaces
     total_pieces = sum(row.count(1) + row.count(-1) for row in board)
-    if player==1:
-        n=0
-    else:
-        n=4
+    
+    score = 0
+    player_front_tiles = 0
+    opp_front_tiles = 0
+    # Define the weights for each position on the board
+    weights = [
+        
+            [20, -3, 11, 8, 8, 11, -3, 20],
+            [-3, -7, -4, 1, 1, -4, -7, -3],
+            [11, -4, 2, 2, 2, 2, -4, 11],
+            [8, 1, 2, -3, -3, 2, 1, 8],
+            [8, 1, 2, -3, -3, 2, 1, 8],
+            [11, -4, 2, 2, 2, 2, -4, 11],
+            [-3, -7, -4, 1, 1, -4, -7, -3],
+            [20, -3, 11, 8, 8, 11, -3, 20]
+        ]
 
-    if total_pieces >= 55:
-        # Late game strategy
-        score = piece_count_eval(board, player)
-    elif total_pieces >= 30:
-        # Mid game strategy
-        score = piece_count_eval(board, player) + constants[n]*mobility_eval(board, player) + constants[n+1]*evaluate_board(board,player)
+    dx = [-1, -1, 0, 1, 1, 1, 0, -1]
+    dy = [0, 1, 1, 1, 0, -1, -1, -1]
+    
+    # Calculate the score based on the player's pieces and the weights
+    for i in range(8):
+        for j in range(8):
+            if board[i][j] == 1:
+                score += weights[i][j]
+            elif board[i][j] == -1:
+                score -= weights[i][j]
+            if board[i][j]==0:
+                for k in range(8):
+                        x = i + dx[k]
+                        y = j + dy[k]
+                        if (x >= 0 and x < 8 and y >= 0 and y < 8 and
+                                board[x][y] == 0):
+                            if board[i][j] == player:
+                                player_front_tiles += 1
+                            else:
+                                opp_front_tiles += 1
+                            break
+    if player_front_tiles > opp_front_tiles:
+        fscore = -100*player_front_tiles / (player_front_tiles+opp_front_tiles)
+    elif player_front_tiles < opp_front_tiles:
+        fscore = 100*opp_front_tiles / (player_front_tiles+opp_front_tiles)
     else:
-        # Early game strategy
-        score = piece_count_eval(board, player) + constants[n+2]* mobility_eval(board, player) + constants[n+3]*evaluate_board(board,player)
+        fscore = 0        
+     
 
-    return int(score)
+    return int((10 * piece_count_eval(board,player)) + (801.724 * corner_occupancy_eval(board,player)) + (382.026 * corner_closeniness_eval(board,player)) + \
+               (78.922 * mobility_eval(board,player)) + (74.396 * fscore) + (10 * score))
+
 def piece_count_eval(board, player):
     # evaluates according to piece count 
-    player_pieces = sum(row.count(player) for row in board)
-    opponent_pieces = sum(row.count(-player) for row in board)
-    return player_pieces - opponent_pieces
+    player_tiles = sum(row.count(player) for row in board)
+    opp_tiles = sum(row.count(-player) for row in board)
+    if player_tiles > opp_tiles:
+        score = 100*player_tiles / (player_tiles+opp_tiles)
+    elif player_tiles < opp_tiles:
+        score = -100*opp_tiles / (player_tiles+opp_tiles)
+    else:
+        score = 0
+    return score
+
+def corner_occupancy_eval(board,player):
+    corners=[[0,0],[0,7],[7,0],[7,7]]
+    score = 0
+    for each in corners:
+        if board[each[0]][each[1]] == player:
+            score += 1
+        elif board[each[0]][each[1]] == -player:
+            score -= 1
+    
+    return 25*score
+
+def corner_closeniness_eval(board,player):
+    corners=[[0,0],[7,0],[0,7],[7,7]]
+    d = [[1,1], [1,0], [0,1], [-1,1], [0,1], [-1,0], [1,-1], [0,-1], [1,0], [-1,-1], [-1,0], [0,-1]] 
+    score=0
+    for c in range(4):
+        if board[corners[c][0]][corners[c][1]] == 0:
+            for b in range(3):
+                if board[corners[c][0]+d[3*c+b][0]][corners[c][1]+d[3*c+b][1]] == player:
+                    score +=1
+                elif board[corners[c][0]+d[3*c+b][0]][corners[c][1]+d[3*c+b][1]] == -player:
+                    score -=1
+    
+    return -12.5*score
 
 def mobility_eval(board, player):
-    # evalutaes according ot mobilty. aka how many possible moves are available
-    player_legal_moves = len(get_possible_moves(board, player))
-    opponent_legal_moves = len(get_possible_moves(board, -player))
-    return player_legal_moves - opponent_legal_moves
-
-
+    # evalutaes according ot mobilty. aka how many possible moves are available, relative to the total amount of moves
+    poss_P1 = get_possible_moves(board,player)
+    poss_P2 = get_possible_moves(board,-player)
+    if poss_P1[0]==0:
+        poss_P1=[]
+    if poss_P2[0]==0:
+        poss_P2=[]
+    
+    if len(poss_P1)>len(poss_P2):
+        score=100*len(poss_P1)/(len(poss_P1)+len(poss_P2))
+    elif len(poss_P2)>len(poss_P1):
+        score=-100*len(poss_P2)/(len(poss_P1)+len(poss_P2))
+    else:
+        score = 0
+    return score
 
 def minimax(position, depth, alpha, beta, Player,constants):
     
     Posible_moves=get_possible_moves(position,Player)
     if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
-        return evaluate_othello(position,Player,constants) 
+        return (evaluate_othello(position,Player,constants), 1 )
     
     if Player==-1:
         maxEval = -10**100
         for each in Posible_moves:
-            eval = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)*100+each
+            #print(each)
+            eval, _ = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)
             maxEval = max(maxEval, eval)
             alpha = max(alpha, eval)
             if beta <= alpha:
                 break
-        return maxEval	
+        return (maxEval, each)
     
     else:
         minEval = 10**100
         for each in Posible_moves:
-            eval = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)*100+each
+            eval, _ = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)
             minEval = min(minEval, eval)
             beta = min(beta, eval)
             if beta <= alpha:
                 break
-        return minEval
+        return (minEval, each)
 
 def get_best_move(board,Player,depth,constants):
     #Finds the best move according to the current version of the minimax algoritm. It's a separate function because we had a plan to add an opening book aswell.
-    best_move=minimax(board, depth, -float('inf'), float('inf'), Player, constants)%100
-    #print(best_move+11)
+    _ , best_move =minimax(board, depth, -float('inf'), float('inf'), Player, constants)
+    #print("best move",best_move)
     return best_move
 
 def new_game():
@@ -244,13 +318,13 @@ def new_game():
     change_board(34,board,1)
     return board
 
-def who_wins(board,player):
+def who_wins(board):
     # decides who wins the game
-    score=sum(row.count(player) for row in board)-sum(row.count(-player) for row in board)
+    score=sum(row.count(1) for row in board)-sum(row.count(-1) for row in board)
     if score == 0:
-        return "Player 0 " #"The game ended in a Draw"
+        return 0 #"The game ended in a Draw"
     else:
-        return "Player 1 wins" if score > 0 else "Player 2 wins"
+        return 10**100 if score > 0 else -10**100
 
 def constants_change(constant,board):
     # Changes the constants used in the eval function, is only used when the bot is training. It's supposed to find some good ish values for the eval funtion
@@ -262,19 +336,19 @@ def constants_change(constant,board):
         constants[5]=constants[1]
         constants[6]=constants[2]
         constants[7]=constants[3]
-        multiplier = 2*random.random()-1
-        constants[4] += (2*random.random()-1)/multiplier
-        constants[5] += (2*random.random()-1)/multiplier
-        constants[6] += (2*random.random()-1)/multiplier
-        constants[7] += (2*random.random()-1)/multiplier
+        multiplier = 2*random()-1
+        constants[4] += (2*random()-1)/multiplier
+        constants[5] += (2*random()-1)/multiplier
+        constants[6] += (2*random()-1)/multiplier
+        constants[7] += (2*random()-1)/multiplier
     if who_won ==1:
         constants[0]=constants[4]
         constants[1]=constants[5]
         constants[2]=constants[6]
         constants[3]=constants[7]
-        multiplier = 2*random.random()-1
-        constants[4] += (2*random.random()-1)/multiplier
-        constants[5] += (2*random.random()-1)/multiplier
-        constants[6] += (2*random.random()-1)/multiplier
-        constants[7] += (2*random.random()-1)/multiplier
+        multiplier = 2*random()-1
+        constants[4] += (2*random()-1)/multiplier
+        constants[5] += (2*random()-1)/multiplier
+        constants[6] += (2*random()-1)/multiplier
+        constants[7] += (2*random()-1)/multiplier
     return constants
