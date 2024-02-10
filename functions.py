@@ -72,7 +72,7 @@ def is_getting_flipped(pos,iboard,pplayer):
     pos -=11
     
     if pos < 0:
-        # Workaround for a pecial case in the minimax algoritm
+        # Workaround for a special case in the minimax algoritm
         return iboard
     # Decide the starting positions in the array
     y=int(pos%10)
@@ -122,8 +122,6 @@ def is_getting_flipped(pos,iboard,pplayer):
 
 def evaluate_othello(board, player, constants):
     # The main eval funtion that adds up the eval from the children functions below.
-    # Determine the game stage based on the number of pieces or empty spaces
-    total_pieces = sum(row.count(1) + row.count(-1) for row in board)
     
     score = 0
     player_front_tiles = 0
