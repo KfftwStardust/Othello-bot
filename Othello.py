@@ -1,12 +1,17 @@
 from functions import *
 
 def main():
+    difficulty=" "
+    while not difficulty.isdigit():
+        difficulty=input("Choose difficulty level 1 or 2 or 3 ")
+    difficulty=int(difficulty)
     board=new_game()
     last_computer_move=99
     PLAYER=1
-
-    constants=[7.95265448247082, 3.3591377304196834, 0.12550102679935993, 6.847242107087103, 12.660532007361532, 11.464745778183207, 3.50764725402987, 13.122139178795013]
-
+    constants=[1,1,1,1,1,1,
+               2,100,40,5,5,2,
+               10,801.724,382.026,78.922,74.396,10]
+    constants= constants[(difficulty-1)*6:difficulty*6]
     while True:
         POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
         #print_board(board,POSSIBLE_MOVES)
