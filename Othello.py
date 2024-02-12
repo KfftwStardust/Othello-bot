@@ -36,16 +36,12 @@ def main():
                 """The human player"""
                 print("Player",PLAYER if PLAYER==1 else 2,"turn")
                 print("Possible moves:", POSSIBLE_MOVES)
-                human_move = 99
-                while human_move==99:
+                human_move = " "
+                while not human_move.isdigit():
                     # Find the human move in the text input and detect if some other shit is typed in the console
                     human_move=str(input("Choose of the the positions from the list ")) or " "#str(POSSIBLE_MOVES[0])
-                    #if len(POS)==2:
-                        #POS=str(ord(POS[0:1])-96)+str(POS[1:2])
-                    if not human_move.isdigit():
-                        human_move=99
                     if any(int(human_move) == p for p in POSSIBLE_MOVES) == False:
-                        human_move = 99
+                        human_move = " "
                 board=is_getting_flipped(int(human_move),board,PLAYER)
                 PLAYER = -PLAYER
             if PLAYER ==-1:
