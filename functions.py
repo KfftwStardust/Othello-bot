@@ -122,7 +122,7 @@ def is_getting_flipped(pos,iboard,pplayer):
 
 def evaluate_othello(board, player, constants):
     # The main eval funtion that adds up the eval from the children functions below.
-    
+    n=0
     score = 0
     player_front_tiles = 0
     opp_front_tiles = 0
@@ -167,9 +167,9 @@ def evaluate_othello(board, player, constants):
     else:
         fscore = 0        
      
-    constants=[10,801.724,382.026,78.922,74.396,10]
-    return (constants[0] * piece_count_eval(board,player)) + (constants[1] * corner_occupancy_eval(board,player)) + (constants[2] * corner_closeniness_eval(board,player)) + \
-               (constants[3] * mobility_eval(board,player)) + (constants[4] * fscore) + (constants[5] * score)
+    
+    return (constants[n+0] * piece_count_eval(board,player)) + (constants[n+1] * corner_occupancy_eval(board,player)) + (constants[n+2] * corner_closeniness_eval(board,player)) + \
+               (constants[n+3] * mobility_eval(board,player)) + (constants[n+4] * fscore) + (constants[n+5] * score)
 
 def piece_count_eval(board, player):
     # evaluates according to piece count 
@@ -229,27 +229,31 @@ def minimax(position, depth, alpha, beta, Player,constants):
     
     Posible_moves=get_possible_moves(position,Player)
     if depth == 0 or(Posible_moves ==[] and get_possible_moves(position,-Player)==[]):
-        return (evaluate_othello(position,Player,constants),1) if depth == 0 else who_wins(position)
-    
+        return (evaluate_othello(position,Player,constants),1) if depth == 0 else (who_wins(position), 1)
+    best_move=0
     if Player==-1:
         maxEval = -10**100
         for each in Posible_moves:
             eval, _ = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)
-            maxEval = max(maxEval, eval)
+            if maxEval< eval:
+                maxEval=eval
+                best_move=each
             alpha = max(alpha, eval)
             if beta <= alpha:
                 break
-        return (maxEval, each)
+        return (maxEval, best_move)
     
     else:
         minEval = 10**100
         for each in Posible_moves:
             eval, _ = minimax(is_getting_flipped(each,position,Player), depth - 1, alpha, beta, -Player,constants)
-            minEval = min(minEval, eval)
+            if minEval> eval:
+                minEval=eval
+                best_move=each
             beta = min(beta, eval)
             if beta <= alpha:
                 break
-        return (minEval, each)
+        return (minEval, best_move)
 
 def get_best_move(board,Player,depth,constants):
     #Finds the best move according to the current version of the minimax algoritm. It's a separate function because we had a plan to add an opening book aswell.

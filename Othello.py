@@ -27,7 +27,7 @@ def main():
             PLAYER=1
             POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
         
-        elif POSSIBLE_MOVES!=[]:
+        elif POSSIBLE_MOVES!=[0]:
             #print(POSSIBLE_MOVES)
             old_board=board
             #print_board(board,POSSIBLE_MOVES)
@@ -39,7 +39,7 @@ def main():
                 human_move = 99
                 while human_move==99:
                     # Find the human move in the text input and detect if some other shit is typed in the console
-                    human_move=str(input("Choose of the the positions from the list ")) or str(POSSIBLE_MOVES[0])
+                    human_move=str(input("Choose of the the positions from the list ")) or " "#str(POSSIBLE_MOVES[0])
                     #if len(POS)==2:
                         #POS=str(ord(POS[0:1])-96)+str(POS[1:2])
                     if not human_move.isdigit():
@@ -47,6 +47,7 @@ def main():
                     if any(int(human_move) == p for p in POSSIBLE_MOVES) == False:
                         human_move = 99
                 board=is_getting_flipped(int(human_move),board,PLAYER)
+                PLAYER = -PLAYER
             if PLAYER ==-1:
                 """The computer player"""
                 #print_board(board,[])
@@ -56,7 +57,8 @@ def main():
                 #print(f"Time taken for get_best_move: {end_time - start_time} seconds")
                 board=is_getting_flipped(computer_move,board,PLAYER)
                 last_computer_move = computer_move
-            PLAYER = -PLAYER
+                PLAYER = -PLAYER
+        
 
 if __name__ == "__main__":
     main()
