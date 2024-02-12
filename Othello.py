@@ -44,7 +44,7 @@ def main():
                         human_move = " "
                 board=is_getting_flipped(int(human_move),board,PLAYER)
                 PLAYER = -PLAYER
-            if PLAYER ==-1:
+            elif PLAYER ==-1:
                 """The computer player"""
                 #print_board(board,[])
                 #start_time = timeit.default_timer()
