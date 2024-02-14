@@ -6,10 +6,11 @@ def change_board(pos,jboard,kplayer):
     return jboard
 
 def get_possible_moves(sboard, lplayer):
+    d=len(sboard)
     # Finds all possible moves by iterating through all board positions
     POSSIBLE_MOVES = []
-    for i in range(8):
-        for j in range(8):
+    for i in range(d):
+        for j in range(d):
             if sboard[i][j] == 0:
                 if is_valid_move(sboard, i, j, lplayer):
                     POSSIBLE_MOVES.append(j*10+i+11)
@@ -20,10 +21,11 @@ def get_possible_moves(sboard, lplayer):
 
 def print_board(board, POSSIBLE_MOVES,last_computer_move):
     # prints the current board with your current possible moves and the last computer move played
+    d=len(board)
     print("   1  2  3  4  5  6  7  8")
-    for i in range(8):
+    for i in range(d):
         print(i + 1, end=" ")
-        for j in range(8):
+        for j in range(d):
             position = int(10*int(j)+int(i)+11)
             if any(position == p for p in POSSIBLE_MOVES):
                 print('🟢', end=' ') #🟢🔵
@@ -46,17 +48,18 @@ def is_valid_move(dboard, row, col, layer):
     return False
 
 def is_valid_direction(cboard, row, col, direction, cplayer):
+    d=len(cboard)
     opponent =  - cplayer
     i, j = direction
 
     x, y = row + i, col + j
-    if not (0 <= x < 8 and 0 <= y < 8) or cboard[x][y] != opponent:
+    if not (0 <= x < d and 0 <= y < d) or cboard[x][y] != opponent:
         return False
 
     x += i
     y += j
 
-    while 0 <= x < 8 and 0 <= y < 8:
+    while 0 <= x < d and 0 <= y < d:
         if cboard[x][y] == cplayer:
             return True
         elif cboard[x][y] == 0:
@@ -70,7 +73,7 @@ def is_valid_direction(cboard, row, col, direction, cplayer):
 def is_getting_flipped(pos,iboard,pplayer):
     # Decides which pieces are getting flipped when a piece is played
     pos -=11
-    
+    d=len(iboard)-1
     if pos < 0:
         # Workaround for a special case in the minimax algoritm
         return iboard
@@ -82,14 +85,14 @@ def is_getting_flipped(pos,iboard,pplayer):
     # The first part is the first two numbers, they decide the direction like a vector
     # The second part is the third value which decides how many times it's supposed to iterate through the 2d array, this is unique for each direction
     # the thrisd part is the last two numbers which is the starting posistion for the operation
-    directions = [(0, 1,7-y,x,y), 
-                  (1, 0,7-x,x,y), 
+    directions = [(0, 1,d-y,x,y), 
+                  (1, 0,d-x,x,y), 
                   (0, -1,y,x,y), 
                   (-1, 0,x,x,y), 
-                  (1, 1,min(7-x,7-y),x,y), 
+                  (1, 1,min(d-x,d-y),x,y), 
                   (-1, -1,min(x,y),x,y), 
-                  (-1, 1,min(x,7-y),x,y), 
-                  (1, -1,min(7-x,y),x,y)]
+                  (-1, 1,min(x,d-y),x,y), 
+                  (1, -1,min(d-x,y),x,y)]
     output=[pos]
     opp = -pplayer 
     new_board = [row[:] for row in iboard]
@@ -100,7 +103,7 @@ def is_getting_flipped(pos,iboard,pplayer):
         for b in range(iteration_amount):
             y += dy
             x += dx
-            """if max(x,y)>7 or min(x,y)<0:
+            """if max(x,y)>d or min(x,y)<0:
                 # stops it from itarion outside of the board, and generating error messages
                 break"""
             if new_board[y][x] == opp:
@@ -122,6 +125,7 @@ def is_getting_flipped(pos,iboard,pplayer):
 
 def evaluate_othello(board, player, constants):
     # The main eval funtion that adds up the eval from the children functions below.
+    d = len(board)
     score = 0
     player_front_tiles = 0
     opp_front_tiles = 0
@@ -137,13 +141,24 @@ def evaluate_othello(board, player, constants):
             [-3, -7, -4, 1, 1, -4, -7, -3],
             [20, -3, 11, 8, 8, 11, -3, 20]
         ]
+    if d != 8:
+        weights=[
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0],
+        ]
 
     dx = [-1, -1, 0, 1, 1, 1, 0, -1]
     dy = [0, 1, 1, 1, 0, -1, -1, -1]
     
     # Calculate the score based on the player's pieces and the weights
-    for i in range(8):
-        for j in range(8):
+    for i in range(d):
+        for j in range(d):
             if board[i][j] == player:
                 score += weights[i][j]
             elif board[i][j] == -player:
@@ -152,7 +167,7 @@ def evaluate_othello(board, player, constants):
                 for k in range(8):
                         x = i + dx[k]
                         y = j + dy[k]
-                        if (x >= 0 and x < 8 and y >= 0 and y < 8 and
+                        if (x >= 0 and x < d and y >= 0 and y < d and
                                 board[x][y] == 0):
                             if board[i][j] == player:
                                 player_front_tiles += 1
@@ -183,7 +198,8 @@ def piece_count_eval(board, player):
     return score
 
 def corner_occupancy_eval(board,player):
-    corners=[[0,0],[0,7],[7,0],[7,7]]
+    d=len(board)-1
+    corners=[[0,0],[0,d],[d,0],[d,d]]
     score = 0
     for each in corners:
         if board[each[0]][each[1]] == player:
@@ -194,7 +210,8 @@ def corner_occupancy_eval(board,player):
     return 25*score
 
 def corner_closeniness_eval(board,player):
-    corners=[[0,0],[7,0],[0,7],[7,7]]
+    d= len(board)-1
+    corners=[[0,0],[d,0],[0,d],[d,d]]
     d = [[1,1], [1,0], [0,1], [-1,1], [0,1], [-1,0], [1,-1], [0,-1], [1,0], [-1,-1], [-1,0], [0,-1]] 
     score=0
     for c in range(4):
@@ -260,18 +277,18 @@ def get_best_move(board,Player,depth,constants):
     #print("best move",best_move)
     return best_move
 
-def new_game():
+def new_game(d):
     #Creates a new board and readies it for a new game
     board=[]
-    for q in range(8):
+    for q in range(d):
         x=[]
-        for o in range(8):
+        for o in range(d):
             x.append(int(0))
         board.append(x)
-    change_board(33,board,-1)
-    change_board(44,board,-1)
-    change_board(43,board,1)
-    change_board(34,board,1)
+    change_board((10*(-1+len(board)/2))+(-1+len(board)/2),board,-1)
+    change_board((10*len(board)/2)+(len(board)/2),board,-1)
+    change_board((10*len(board)/2)+(-1+len(board)/2),board,1)
+    change_board((10*(-1+len(board)/2))+(len(board)/2),board,1)
     return board
 
 def who_wins(board):

@@ -7,7 +7,8 @@ def main():
     while not difficulty.isdigit():
         difficulty=input("Choose difficulty level 1 or 2 or 3 ")
     difficulty=int(difficulty)
-    board=new_game()
+    board=new_game(8)
+    print(len(board))
     last_computer_move=99
     PLAYER=1
     constants=[1,1,1,1,1,1,
@@ -27,9 +28,9 @@ def main():
                 win_amount +=1
                 print(win_amount/num_of_games, num_of_games, file=open('win_rate.txt', 'a'))
             #input("Press Enter for a new game")
-            print(constants[0:12], file=open('eval_values.txt', 'a'))
+            #print(constants[0:12], file=open('eval_values.txt', 'a'))
             #constants=constants_change(constants,board)
-            board=new_game()
+            board=new_game(8)
             last_computer_move=99
             PLAYER=1
             POSSIBLE_MOVES = get_possible_moves(board, PLAYER)
@@ -39,10 +40,11 @@ def main():
             old_board=board
             #print_board(board,POSSIBLE_MOVES)
             print_board(board,POSSIBLE_MOVES,last_computer_move)
-            if PLAYER==1:
+            if PLAYER!=0:
                 """The human player"""
                 print("Player",PLAYER if PLAYER==1 else 2,"turn")
                 print("Possible moves:", POSSIBLE_MOVES)
+                """
                 human_move = " "
                 while not human_move.isdigit():
                     # Find the human move in the text input and detect if some other shit is typed in the console
@@ -50,15 +52,16 @@ def main():
                     if any(int(human_move) == p for p in POSSIBLE_MOVES) == False:
                         human_move = " " 
                 board=is_getting_flipped(int(human_move),old_board, PLAYER)
-                """human_move=random.randrange(0,len(POSSIBLE_MOVES))
-                board=is_getting_flipped(POSSIBLE_MOVES[human_move],board,PLAYER)"""
+                """
+                human_move=random.randrange(0,len(POSSIBLE_MOVES))
+                board=is_getting_flipped(POSSIBLE_MOVES[human_move],board,PLAYER)
                 
                 
             elif PLAYER ==-1:
                 """The computer player"""
                 #print_board(board,[])
                 #start_time = timeit.default_timer()
-                computer_move = get_best_move(old_board,PLAYER,6,constants)
+                computer_move = get_best_move(old_board,PLAYER,4,constants)
                 #end_time = timeit.default_timer()
                 #print(f"Time taken for get_best_move: {end_time - start_time} seconds")
                 board=is_getting_flipped(computer_move,board,PLAYER)
