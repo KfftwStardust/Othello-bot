@@ -43,21 +43,22 @@ def main():
                 """The human player"""
                 print("Player",PLAYER if PLAYER==1 else 2,"turn")
                 print("Possible moves:", POSSIBLE_MOVES)
-                """human_move = " "
+                human_move = " "
                 while not human_move.isdigit():
                     # Find the human move in the text input and detect if some other shit is typed in the console
                     human_move=str(input("Choose of the the positions from the list ")) or " "#str(POSSIBLE_MOVES[0])
                     if any(int(human_move) == p for p in POSSIBLE_MOVES) == False:
                         human_move = " " 
-                """
-                human_move=random.randrange(0,len(POSSIBLE_MOVES))
-                board=is_getting_flipped(POSSIBLE_MOVES[human_move],board,PLAYER)
+                board=is_getting_flipped(int(human_move),old_board, PLAYER)
+                """human_move=random.randrange(0,len(POSSIBLE_MOVES))
+                board=is_getting_flipped(POSSIBLE_MOVES[human_move],board,PLAYER)"""
+                
                 
             elif PLAYER ==-1:
                 """The computer player"""
                 #print_board(board,[])
                 #start_time = timeit.default_timer()
-                computer_move = get_best_move(old_board,PLAYER,4,constants)
+                computer_move = get_best_move(old_board,PLAYER,6,constants)
                 #end_time = timeit.default_timer()
                 #print(f"Time taken for get_best_move: {end_time - start_time} seconds")
                 board=is_getting_flipped(computer_move,board,PLAYER)

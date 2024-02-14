@@ -167,7 +167,7 @@ def evaluate_othello(board, player, constants):
         fscore = 0        
      
     
-    return (constants[0] * piece_count_eval(board,player)) + (constants[1] * corner_occupancy_eval(board,player)) + (constants[n+2] * corner_closeniness_eval(board,player)) + \
+    return (constants[0] * piece_count_eval(board,player)) + (constants[1] * corner_occupancy_eval(board,player)) + (constants[2] * corner_closeniness_eval(board,player)) + \
                (constants[3] * mobility_eval(board,player)) + (constants[4] * fscore) + (constants[5] * score)
 
 def piece_count_eval(board, player):
