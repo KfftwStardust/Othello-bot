@@ -122,7 +122,6 @@ def is_getting_flipped(pos,iboard,pplayer):
 
 def evaluate_othello(board, player, constants):
     # The main eval funtion that adds up the eval from the children functions below.
-    n=0
     score = 0
     player_front_tiles = 0
     opp_front_tiles = 0
@@ -168,8 +167,8 @@ def evaluate_othello(board, player, constants):
         fscore = 0        
      
     
-    return (constants[n+0] * piece_count_eval(board,player)) + (constants[n+1] * corner_occupancy_eval(board,player)) + (constants[n+2] * corner_closeniness_eval(board,player)) + \
-               (constants[n+3] * mobility_eval(board,player)) + (constants[n+4] * fscore) + (constants[n+5] * score)
+    return (constants[0] * piece_count_eval(board,player)) + (constants[1] * corner_occupancy_eval(board,player)) + (constants[n+2] * corner_closeniness_eval(board,player)) + \
+               (constants[3] * mobility_eval(board,player)) + (constants[4] * fscore) + (constants[5] * score)
 
 def piece_count_eval(board, player):
     # evaluates according to piece count 
@@ -286,26 +285,15 @@ def who_wins(board):
 def constants_change(constant,board):
     # Changes the constants used in the eval function, is only used when the bot is training. It's supposed to find some good ish values for the eval funtion
     constants=constant
-    who_won=int(who_wins(board)[7:8])
+    who_won=int(who_wins(board))
     
-    if who_won == 2:
-        constants[4]=constants[0]
-        constants[5]=constants[1]
-        constants[6]=constants[2]
-        constants[7]=constants[3]
-        multiplier = 2*random()-1
-        constants[4] += (2*random()-1)/multiplier
-        constants[5] += (2*random()-1)/multiplier
-        constants[6] += (2*random()-1)/multiplier
-        constants[7] += (2*random()-1)/multiplier
-    if who_won ==1:
-        constants[0]=constants[4]
-        constants[1]=constants[5]
-        constants[2]=constants[6]
-        constants[3]=constants[7]
-        multiplier = 2*random()-1
-        constants[4] += (2*random()-1)/multiplier
-        constants[5] += (2*random()-1)/multiplier
-        constants[6] += (2*random()-1)/multiplier
-        constants[7] += (2*random()-1)/multiplier
+    if who_won >0:
+        for b in range(6):
+            constants[b+6]=constants[b]
+            constants[b] += 2*random()
+    if who_won <=0:
+        for b in range(6):
+            constants[b]=constants[b+6]
+            constants[b+6] += 2*random()
+        
     return constants
