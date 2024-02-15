@@ -1,9 +1,14 @@
 from functions import *
 import random
+from math import floor
+
+
 def main():
+    human_move=88
+    game_string = " "
     num_of_games = 0
     win_amount = 0
-    difficulty=" "
+    difficulty = " "
     while not difficulty.isdigit():
         difficulty=input("Choose difficulty level 1 or 2 or 3 ")
     difficulty=int(difficulty)
@@ -29,6 +34,9 @@ def main():
             #input("Press Enter for a new game")
             print(constants[0:12], file=open('eval_values.txt', 'a'))
             #constants=constants_change(constants,board)
+            print(game_string, file=open('games.txt','a'))
+            game_string = " "
+            
             board=new_game()
             last_computer_move=99
             PLAYER=1
@@ -39,7 +47,7 @@ def main():
             old_board=board
             #print_board(board,POSSIBLE_MOVES)
             print_board(board,POSSIBLE_MOVES,last_computer_move)
-            if PLAYER==1:
+            if PLAYER==0:
                 """The human player"""
                 print("Player",PLAYER if PLAYER==1 else 2,"turn")
                 print("Possible moves:", POSSIBLE_MOVES)
@@ -52,18 +60,22 @@ def main():
                 board=is_getting_flipped(int(human_move),old_board, PLAYER)
                 """human_move=random.randrange(0,len(POSSIBLE_MOVES))
                 board=is_getting_flipped(POSSIBLE_MOVES[human_move],board,PLAYER)"""
+                game_string +=chr(96+floor(int(human_move)/10))+str(int(human_move)%10) + " "
                 
                 
-            elif PLAYER ==-1:
+                
+            elif PLAYER !=0:
                 """The computer player"""
                 #print_board(board,[])
                 #start_time = timeit.default_timer()
-                computer_move = get_best_move(old_board,PLAYER,6,constants)
+                computer_move = get_best_move(old_board,PLAYER,4,constants)
                 #end_time = timeit.default_timer()
                 #print(f"Time taken for get_best_move: {end_time - start_time} seconds")
                 board=is_getting_flipped(computer_move,board,PLAYER)
                 last_computer_move = computer_move
+                game_string += chr(96+floor(computer_move/10))+str(computer_move%10) + " "
         PLAYER = -PLAYER
+        
 
 if __name__ == "__main__":
     main()
