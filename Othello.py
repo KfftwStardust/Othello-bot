@@ -46,7 +46,7 @@ def main():
             
             old_board=board
             
-            print_board(board,POSSIBLE_MOVES,last_computer_move)
+            
             if PLAYER==1:
                 """The human player"""
                 print("Player",PLAYER if PLAYER==1 else 2,"turn")
