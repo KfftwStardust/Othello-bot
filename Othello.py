@@ -54,9 +54,10 @@ def main():
                 human_move = " "
                 while not human_move.isdigit():
                     # Find the human move in the text input and detect if some other shit is typed in the console
-                    human_move=str(input("Choose of the the positions from the list ")) or " "
+                    human_move=str(input("Choose a position from the list: ")) or " "
                     if any(int(human_move) == p for p in POSSIBLE_MOVES) == False:
-                        human_move = " " 
+                        human_move = " "
+                last_computer_move = 99
                 board=is_getting_flipped(int(human_move),old_board, PLAYER)
                 
                 game_string +=chr(96+floor(int(human_move)/10))+str(int(human_move)%10) + " "
@@ -66,7 +67,7 @@ def main():
             elif PLAYER ==-1:
                 """The computer player"""
                 
-                computer_move = get_best_move(old_board,PLAYER,4,constants)
+                computer_move = get_best_move(old_board,PLAYER,6,constants)
                 
                 board=is_getting_flipped(computer_move,board,PLAYER)
                 last_computer_move = computer_move
